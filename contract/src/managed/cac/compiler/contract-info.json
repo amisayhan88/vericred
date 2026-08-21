@@ -107,6 +107,87 @@
       }
     },
     {
+      "name": "suspendCredential",
+      "pure": false,
+      "proof": true,
+      "arguments": [
+        {
+          "name": "credentialHash",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Tuple",
+        "types": [
+        ]
+      }
+    },
+    {
+      "name": "reinstateCredential",
+      "pure": false,
+      "proof": true,
+      "arguments": [
+        {
+          "name": "credentialHash",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Tuple",
+        "types": [
+        ]
+      }
+    },
+    {
+      "name": "batchIssueCredentials",
+      "pure": false,
+      "proof": true,
+      "arguments": [
+        {
+          "name": "hash1",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        },
+        {
+          "name": "hash2",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        },
+        {
+          "name": "hash3",
+          "type": {
+            "type-name": "Bytes",
+            "length": 32
+          }
+        }
+      ],
+      "result-type": {
+        "type-name": "Tuple",
+        "types": [
+        ]
+      }
+    },
+    {
+      "name": "getCredentialCount",
+      "pure": true,
+      "proof": false,
+      "arguments": [
+      ],
+      "result-type": {
+        "type-name": "Boolean"
+      }
+    },
+    {
       "name": "publicKey",
       "pure": true,
       "proof": false,
@@ -195,6 +276,7 @@
         "elements": [
           "UNISSUED",
           "VALID",
+          "SUSPENDED",
           "REVOKED"
         ]
       }

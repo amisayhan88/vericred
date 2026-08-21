@@ -20,3 +20,7 @@ logs/
 # IDE
 .idea/
 .vscode/
+
+# Local LevelDB state
+midnight-level-db/
+preprod-state-*/

@@ -28,9 +28,11 @@ export const Sidebar: React.FC = () => {
   const location = useLocation();
 
   return (
-    <aside className="w-64 shrink-0 bg-white/70 dark:bg-slate-900/70 border-r border-slate-200/80 dark:border-slate-800 p-4 min-h-[calc(100vh-65px)] flex flex-col justify-between backdrop-blur-md">
+    <aside className="hidden md:flex w-60 shrink-0 bg-canvas border-r border-hairline p-4 min-h-[calc(100vh-64px)] flex-col justify-between">
       <div className="space-y-1">
-        <div className="px-3 py-2 text-[11px] font-bold tracking-wider text-slate-400 uppercase">Navigation</div>
+        <div className="px-3 py-2 text-caption font-semibold tracking-wider text-muted uppercase">
+          Navigation
+        </div>
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = location.pathname === item.href || (location.pathname === '/' && item.href === '/dashboard');
@@ -38,26 +40,27 @@ export const Sidebar: React.FC = () => {
             <Link
               key={item.href}
               to={item.href}
-              className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-md text-nav-link transition-all duration-150 ${
                 isActive
-                  ? 'bg-amber-100/80 text-amber-900 dark:bg-amber-500/20 dark:text-amber-300 shadow-sm border border-amber-300/40 dark:border-amber-700/40'
-                  : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white'
+                  ? 'bg-canvas text-ink font-semibold shadow-soft border border-hairline'
+                  : 'text-muted hover:bg-surface-soft hover:text-ink'
               }`}
             >
-              <Icon className={`w-4 h-4 ${isActive ? 'text-amber-600 dark:text-amber-400' : 'text-slate-400'}`} />
+              <Icon className={`w-4 h-4 ${isActive ? 'text-ink' : 'text-muted'}`} />
               <span>{item.label}</span>
             </Link>
           );
         })}
       </div>
 
-      <div className="p-3.5 rounded-2xl bg-gradient-to-br from-amber-50 to-emerald-50 dark:from-slate-800 dark:to-slate-850 border border-amber-200/60 dark:border-slate-700">
-        <div className="flex items-center gap-2 text-xs font-bold text-slate-800 dark:text-slate-200">
-          <ShieldCheck className="w-4 h-4 text-emerald-500" />
-          <span>Zero-Knowledge Proofs</span>
+      {/* Bottom Info Card */}
+      <div className="card-feature p-4" style={{ padding: '16px' }}>
+        <div className="flex items-center gap-2 text-body-sm font-semibold text-ink">
+          <ShieldCheck className="w-4 h-4 text-success" />
+          <span>Zero-Knowledge</span>
         </div>
-        <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
-          Selective disclosure enabled via Midnight Compact ZK engine.
+        <p className="text-caption text-muted mt-1.5 leading-relaxed">
+          Selective disclosure via Midnight Compact ZK circuits.
         </p>
       </div>
     </aside>

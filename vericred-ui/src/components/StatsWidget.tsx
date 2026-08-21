@@ -1,5 +1,4 @@
 import React from 'react';
-import { CornerDecorations } from './CornerDecorations';
 
 interface StatsWidgetProps {
   title: string;
@@ -17,27 +16,27 @@ export const StatsWidget: React.FC<StatsWidgetProps> = ({
   description,
 }) => {
   return (
-    <div className="group relative bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800 shadow-soft hover:shadow-glow transition-all duration-300">
-      <CornerDecorations />
-      
+    <div className="card-content p-6 hover:shadow-card transition-shadow duration-200">
       <div className="flex items-center justify-between">
-        <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">{title}</span>
-        <div className="w-9 h-9 rounded-xl bg-amber-100/80 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700/50 flex items-center justify-center text-amber-700 dark:text-amber-300">
+        <span className="text-caption text-muted">{title}</span>
+        <div className="w-9 h-9 rounded-lg bg-surface-card flex items-center justify-center text-ink">
           <Icon className="w-4 h-4" />
         </div>
       </div>
 
       <div className="mt-3 flex items-baseline gap-2">
-        <span className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">{value}</span>
+        <span className="text-display-sm text-ink" style={{ fontSize: '24px', letterSpacing: '-0.5px' }}>
+          {value}
+        </span>
         {change && (
-          <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-md border border-emerald-200 dark:border-emerald-800">
+          <span className="badge-pill text-success bg-[#ecfdf5] text-caption" style={{ fontSize: '11px' }}>
             {change}
           </span>
         )}
       </div>
 
       {description && (
-        <p className="mt-1.5 text-[11px] text-slate-400 dark:text-slate-500 leading-normal">{description}</p>
+        <p className="mt-1.5 text-caption text-muted-soft">{description}</p>
       )}
     </div>
   );

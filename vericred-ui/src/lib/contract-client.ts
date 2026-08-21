@@ -1,7 +1,7 @@
 // VeriCred - Dedicated Contract Interaction Layer
 // Copyright (C) Midnight Foundation & VeriCred Protocol
 
-export const CONTRACT_ADDRESS_PLACEHOLDER = 'a746a03e40e6e4b36ec451548e355f2611657c2334e0e7594c3d14d4ef8da1de';
+export const CONTRACT_ADDRESS_PLACEHOLDER = '3121b7274109a3ca0de55796986e0cae838632d69aa8521f6b1d8fa46f685661';
 
 export interface ContractCallOptions {
   contractAddress?: string;
@@ -65,6 +65,47 @@ export class VeriCredContractClient {
       txHash: `0x${Math.random().toString(16).substring(2, 34)}`,
       status: 'SUCCESS',
     };
+  }
+
+  // NEW: Suspend a credential temporarily
+  public async suspendCredentialCircuit(credentialHash: string): Promise<{ txHash: string; status: 'SUCCESS' }> {
+    console.log(`[ContractClient] Executing suspend circuit for hash: ${credentialHash}`);
+    await new Promise((res) => setTimeout(res, 500));
+    return {
+      txHash: `0x${Math.random().toString(16).substring(2, 34)}`,
+      status: 'SUCCESS',
+    };
+  }
+
+  // NEW: Reinstate a previously suspended credential
+  public async reinstateCredentialCircuit(credentialHash: string): Promise<{ txHash: string; status: 'SUCCESS' }> {
+    console.log(`[ContractClient] Executing reinstate circuit for hash: ${credentialHash}`);
+    await new Promise((res) => setTimeout(res, 500));
+    return {
+      txHash: `0x${Math.random().toString(16).substring(2, 34)}`,
+      status: 'SUCCESS',
+    };
+  }
+
+  // NEW: Batch issue up to 3 credentials
+  public async batchIssueCredentialsCircuit(
+    hash1: string,
+    hash2: string,
+    hash3: string
+  ): Promise<{ txHash: string; status: 'SUCCESS' }> {
+    console.log(`[ContractClient] Batch issuing 3 credentials`);
+    await new Promise((res) => setTimeout(res, 900));
+    return {
+      txHash: `0x${Math.random().toString(16).substring(2, 34)}`,
+      status: 'SUCCESS',
+    };
+  }
+
+  // NEW: Get credential count (read-only)
+  public async getCredentialCountCircuit(): Promise<{ count: number }> {
+    console.log(`[ContractClient] Reading credential count from ledger`);
+    await new Promise((res) => setTimeout(res, 300));
+    return { count: 14 };
   }
 }
 

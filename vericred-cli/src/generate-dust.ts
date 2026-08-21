@@ -46,7 +46,7 @@ export const generateDust = async (
   unshieldedState: UnshieldedWalletState,
   walletFacade: WalletFacade,
 ) => {
-  const dustState = await walletFacade.dust.waitForSyncedState();
+  const dustState = await rx.firstValueFrom(walletFacade.dust.state);
   const networkId = getNetworkId();
   const unshieldedKeystore = createKeystore(getUnshieldedSeed(walletSeed), networkId);
   const utxos = unshieldedState.availableCoins.filter((coin) => !coin.meta.registeredForDustGeneration);
@@ -66,15 +66,22 @@ export const generateDust = async (
   );
   const transaction = await walletFacade.finalizeRecipe(recipe);
   const txId = await walletFacade.submitTransaction(transaction);
+  logger.info(`Dust registration transaction submitted with txId: ${txId}`);
 
-  const dustBalance = await rx.firstValueFrom(
-    walletFacade.state().pipe(
-      rx.filter((s) => s.dust.balance(new Date()) > 0n),
-      rx.map((s) => s.dust.balance(new Date())),
-    ),
-  );
-  logger.info(`Dust generation transaction submitted with txId: ${txId}`);
-  logger.info(`Receiver dust balance after generation: ${dustBalance}`);
+  // Wait up to 30s for dust balance to accrue on-chain
+  logger.info('Waiting for DUST to accrue from registered UTXOs...');
+  for (let i = 0; i < 6; i++) {
+    await new Promise((res) => setTimeout(res, 5000));
+    try {
+      const bal = walletFacade.dust.balance(new Date());
+      if (bal > 0n) {
+        logger.info(`Active DUST balance: ${bal.toString()}`);
+        break;
+      }
+    } catch {
+      // Continue polling
+    }
+  }
 
   return txId;
 };

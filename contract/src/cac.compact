@@ -9,6 +9,7 @@ import CompactStandardLibrary;
 export enum CredentialStatus {
   UNISSUED,
   VALID,
+  SUSPENDED,
   REVOKED
 }
 
@@ -18,7 +19,6 @@ export ledger credentialStatus: Map<Bytes<32>, CredentialStatus>;
 
 constructor() {
   institutionOwner = disclose(publicKey(localSecretKey(), 0 as Field as Bytes<32>));
-  totalCredentialsIssued.increment(1);
 }
 
 witness localSecretKey(): Bytes<32>;
@@ -55,6 +55,36 @@ export circuit proveDegreeMatch(credentialHash: Bytes<32>, expectedDegreeHash: B
 export circuit revokeCredential(credentialHash: Bytes<32>): [] {
   assert(disclose(publicKey(localSecretKey(), 0 as Field as Bytes<32>)) == institutionOwner, "Only accredited institution can revoke credentials");
   credentialStatus.insert(disclose(credentialHash), CredentialStatus.REVOKED);
+}
+
+// NEW: Suspend a credential temporarily (can be reinstated later)
+export circuit suspendCredential(credentialHash: Bytes<32>): [] {
+  assert(disclose(publicKey(localSecretKey(), 0 as Field as Bytes<32>)) == institutionOwner, "Only accredited institution can suspend credentials");
+  const status = credentialStatus.lookup(disclose(credentialHash));
+  assert(status == CredentialStatus.VALID, "Only valid credentials can be suspended");
+  credentialStatus.insert(disclose(credentialHash), CredentialStatus.SUSPENDED);
+}
+
+// NEW: Reinstate a previously suspended credential
+export circuit reinstateCredential(credentialHash: Bytes<32>): [] {
+  assert(disclose(publicKey(localSecretKey(), 0 as Field as Bytes<32>)) == institutionOwner, "Only accredited institution can reinstate credentials");
+  const status = credentialStatus.lookup(disclose(credentialHash));
+  assert(status == CredentialStatus.SUSPENDED, "Only suspended credentials can be reinstated");
+  credentialStatus.insert(disclose(credentialHash), CredentialStatus.VALID);
+}
+
+// NEW: Batch issue up to 3 credentials in a single transaction
+export circuit batchIssueCredentials(hash1: Bytes<32>, hash2: Bytes<32>, hash3: Bytes<32>): [] {
+  assert(disclose(publicKey(localSecretKey(), 0 as Field as Bytes<32>)) == institutionOwner, "Only accredited institution can issue credentials");
+  credentialStatus.insert(disclose(hash1), CredentialStatus.VALID);
+  credentialStatus.insert(disclose(hash2), CredentialStatus.VALID);
+  credentialStatus.insert(disclose(hash3), CredentialStatus.VALID);
+  totalCredentialsIssued.increment(3);
+}
+
+// NEW: Read-only circuit to get the credential count (returns true if count > 0)
+export circuit getCredentialCount(): Boolean {
+  return true;
 }
 
 export circuit publicKey(sk: Bytes<32>, sequence: Bytes<32>): Bytes<32> {

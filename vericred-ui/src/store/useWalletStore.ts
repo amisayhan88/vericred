@@ -2,7 +2,7 @@ import { create } from 'zustand';
 
 export interface Transaction {
   id: string;
-  type: 'ISSUE_CREDENTIAL' | 'VERIFY_PROOF' | 'REVOKE_CREDENTIAL';
+  type: 'ISSUE_CREDENTIAL' | 'VERIFY_PROOF' | 'REVOKE_CREDENTIAL' | 'SUSPEND_CREDENTIAL' | 'REINSTATE_CREDENTIAL' | 'BATCH_ISSUE';
   status: 'PENDING' | 'PROCESSING' | 'CONFIRMED' | 'FAILED';
   hash: string;
   timestamp: string;
@@ -19,7 +19,7 @@ export interface Credential {
   gpa: number;
   graduationYear: number;
   credentialHash: string;
-  status: 'VALID' | 'REVOKED';
+  status: 'VALID' | 'SUSPENDED' | 'REVOKED';
   issueDate: string;
 }
 
@@ -52,6 +52,8 @@ interface WalletState {
   issueCredential: (cred: Omit<Credential, 'id' | 'credentialHash' | 'status' | 'issueDate'>) => Promise<void>;
   generateZkProof: (credentialId: string, proofType: 'GPA_THRESHOLD' | 'DEGREE_VERIFICATION', threshold?: number) => Promise<ProofRecord>;
   revokeCredential: (credentialId: string) => Promise<void>;
+  suspendCredential: (credentialId: string) => Promise<void>;
+  reinstateCredential: (credentialId: string) => Promise<void>;
 }
 
 export const useWalletStore = create<WalletState>((set, get) => ({
@@ -303,6 +305,42 @@ export const useWalletStore = create<WalletState>((set, get) => ({
           hash: `0x${Math.random().toString(16).substring(2, 18)}...${Math.random().toString(16).substring(2, 6)}`,
           timestamp: new Date().toLocaleString(),
           details: `Revoked credential token ${credentialId}`,
+        },
+        ...state.transactions,
+      ],
+    }));
+  },
+
+  // NEW: Suspend a credential temporarily
+  suspendCredential: async (credentialId) => {
+    set((state) => ({
+      credentials: state.credentials.map((c) => (c.id === credentialId ? { ...c, status: 'SUSPENDED' as const } : c)),
+      transactions: [
+        {
+          id: `tx-${Date.now()}`,
+          type: 'SUSPEND_CREDENTIAL',
+          status: 'CONFIRMED',
+          hash: `0x${Math.random().toString(16).substring(2, 18)}...${Math.random().toString(16).substring(2, 6)}`,
+          timestamp: new Date().toLocaleString(),
+          details: `Suspended credential token ${credentialId}`,
+        },
+        ...state.transactions,
+      ],
+    }));
+  },
+
+  // NEW: Reinstate a previously suspended credential
+  reinstateCredential: async (credentialId) => {
+    set((state) => ({
+      credentials: state.credentials.map((c) => (c.id === credentialId ? { ...c, status: 'VALID' as const } : c)),
+      transactions: [
+        {
+          id: `tx-${Date.now()}`,
+          type: 'REINSTATE_CREDENTIAL',
+          status: 'CONFIRMED',
+          hash: `0x${Math.random().toString(16).substring(2, 18)}...${Math.random().toString(16).substring(2, 6)}`,
+          timestamp: new Date().toLocaleString(),
+          details: `Reinstated credential token ${credentialId}`,
         },
         ...state.transactions,
       ],

@@ -5,16 +5,17 @@ export var CredentialStatus;
 (function (CredentialStatus) {
   CredentialStatus[CredentialStatus['UNISSUED'] = 0] = 'UNISSUED';
   CredentialStatus[CredentialStatus['VALID'] = 1] = 'VALID';
-  CredentialStatus[CredentialStatus['REVOKED'] = 2] = 'REVOKED';
+  CredentialStatus[CredentialStatus['SUSPENDED'] = 2] = 'SUSPENDED';
+  CredentialStatus[CredentialStatus['REVOKED'] = 3] = 'REVOKED';
 })(CredentialStatus || (CredentialStatus = {}));
 
 const _descriptor_0 = new __compactRuntime.CompactTypeBytes(32);
 
-const _descriptor_1 = new __compactRuntime.CompactTypeEnum(2, 1);
+const _descriptor_1 = new __compactRuntime.CompactTypeUnsignedInteger(65535n, 2);
 
-const _descriptor_2 = __compactRuntime.CompactTypeBoolean;
+const _descriptor_2 = new __compactRuntime.CompactTypeEnum(3, 1);
 
-const _descriptor_3 = new __compactRuntime.CompactTypeUnsignedInteger(65535n, 2);
+const _descriptor_3 = __compactRuntime.CompactTypeBoolean;
 
 const _descriptor_4 = new __compactRuntime.CompactTypeVector(3, _descriptor_0);
 
@@ -22,17 +23,17 @@ const _descriptor_5 = new __compactRuntime.CompactTypeUnsignedInteger(1844674407
 
 class _Either_0 {
   alignment() {
-    return _descriptor_2.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment()));
+    return _descriptor_3.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment()));
   }
   fromValue(value_0) {
     return {
-      is_left: _descriptor_2.fromValue(value_0),
+      is_left: _descriptor_3.fromValue(value_0),
       left: _descriptor_0.fromValue(value_0),
       right: _descriptor_0.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_2.toValue(value_0.is_left).concat(_descriptor_0.toValue(value_0.left).concat(_descriptor_0.toValue(value_0.right)));
+    return _descriptor_3.toValue(value_0.is_left).concat(_descriptor_0.toValue(value_0.left).concat(_descriptor_0.toValue(value_0.right)));
   }
 }
 
@@ -148,7 +149,7 @@ export class Contract {
         const result_0 = this._verifyCredential_0(context,
                                                   partialProofData,
                                                   credentialHash_0);
-        partialProofData.output = { value: _descriptor_2.toValue(result_0), alignment: _descriptor_2.alignment() };
+        partialProofData.output = { value: _descriptor_3.toValue(result_0), alignment: _descriptor_3.alignment() };
         return { result: result_0, context: context, proofData: partialProofData, gasCost: context.gasCost };
       },
       proveGpaThreshold: (...args_1) => {
@@ -182,8 +183,8 @@ export class Contract {
         const context = { ...contextOrig_0, gasCost: __compactRuntime.emptyRunningCost() };
         const partialProofData = {
           input: {
-            value: _descriptor_0.toValue(credentialHash_0).concat(_descriptor_3.toValue(minGpaScaled_0)),
-            alignment: _descriptor_0.alignment().concat(_descriptor_3.alignment())
+            value: _descriptor_0.toValue(credentialHash_0).concat(_descriptor_1.toValue(minGpaScaled_0)),
+            alignment: _descriptor_0.alignment().concat(_descriptor_1.alignment())
           },
           output: undefined,
           publicTranscript: [],
@@ -193,7 +194,7 @@ export class Contract {
                                                    partialProofData,
                                                    credentialHash_0,
                                                    minGpaScaled_0);
-        partialProofData.output = { value: _descriptor_2.toValue(result_0), alignment: _descriptor_2.alignment() };
+        partialProofData.output = { value: _descriptor_3.toValue(result_0), alignment: _descriptor_3.alignment() };
         return { result: result_0, context: context, proofData: partialProofData, gasCost: context.gasCost };
       },
       proveDegreeMatch: (...args_1) => {
@@ -238,7 +239,7 @@ export class Contract {
                                                   partialProofData,
                                                   credentialHash_0,
                                                   expectedDegreeHash_0);
-        partialProofData.output = { value: _descriptor_2.toValue(result_0), alignment: _descriptor_2.alignment() };
+        partialProofData.output = { value: _descriptor_3.toValue(result_0), alignment: _descriptor_3.alignment() };
         return { result: result_0, context: context, proofData: partialProofData, gasCost: context.gasCost };
       },
       revokeCredential: (...args_1) => {
@@ -277,6 +278,135 @@ export class Contract {
         partialProofData.output = { value: [], alignment: [] };
         return { result: result_0, context: context, proofData: partialProofData, gasCost: context.gasCost };
       },
+      suspendCredential: (...args_1) => {
+        if (args_1.length !== 2) {
+          throw new __compactRuntime.CompactError(`suspendCredential: expected 2 arguments (as invoked from Typescript), received ${args_1.length}`);
+        }
+        const contextOrig_0 = args_1[0];
+        const credentialHash_0 = args_1[1];
+        if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.currentQueryContext != undefined)) {
+          __compactRuntime.typeError('suspendCredential',
+                                     'argument 1 (as invoked from Typescript)',
+                                     'cac.compact line 61 char 1',
+                                     'CircuitContext',
+                                     contextOrig_0)
+        }
+        if (!(credentialHash_0.buffer instanceof ArrayBuffer && credentialHash_0.BYTES_PER_ELEMENT === 1 && credentialHash_0.length === 32)) {
+          __compactRuntime.typeError('suspendCredential',
+                                     'argument 1 (argument 2 as invoked from Typescript)',
+                                     'cac.compact line 61 char 1',
+                                     'Bytes<32>',
+                                     credentialHash_0)
+        }
+        const context = { ...contextOrig_0, gasCost: __compactRuntime.emptyRunningCost() };
+        const partialProofData = {
+          input: {
+            value: _descriptor_0.toValue(credentialHash_0),
+            alignment: _descriptor_0.alignment()
+          },
+          output: undefined,
+          publicTranscript: [],
+          privateTranscriptOutputs: []
+        };
+        const result_0 = this._suspendCredential_0(context,
+                                                   partialProofData,
+                                                   credentialHash_0);
+        partialProofData.output = { value: [], alignment: [] };
+        return { result: result_0, context: context, proofData: partialProofData, gasCost: context.gasCost };
+      },
+      reinstateCredential: (...args_1) => {
+        if (args_1.length !== 2) {
+          throw new __compactRuntime.CompactError(`reinstateCredential: expected 2 arguments (as invoked from Typescript), received ${args_1.length}`);
+        }
+        const contextOrig_0 = args_1[0];
+        const credentialHash_0 = args_1[1];
+        if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.currentQueryContext != undefined)) {
+          __compactRuntime.typeError('reinstateCredential',
+                                     'argument 1 (as invoked from Typescript)',
+                                     'cac.compact line 69 char 1',
+                                     'CircuitContext',
+                                     contextOrig_0)
+        }
+        if (!(credentialHash_0.buffer instanceof ArrayBuffer && credentialHash_0.BYTES_PER_ELEMENT === 1 && credentialHash_0.length === 32)) {
+          __compactRuntime.typeError('reinstateCredential',
+                                     'argument 1 (argument 2 as invoked from Typescript)',
+                                     'cac.compact line 69 char 1',
+                                     'Bytes<32>',
+                                     credentialHash_0)
+        }
+        const context = { ...contextOrig_0, gasCost: __compactRuntime.emptyRunningCost() };
+        const partialProofData = {
+          input: {
+            value: _descriptor_0.toValue(credentialHash_0),
+            alignment: _descriptor_0.alignment()
+          },
+          output: undefined,
+          publicTranscript: [],
+          privateTranscriptOutputs: []
+        };
+        const result_0 = this._reinstateCredential_0(context,
+                                                     partialProofData,
+                                                     credentialHash_0);
+        partialProofData.output = { value: [], alignment: [] };
+        return { result: result_0, context: context, proofData: partialProofData, gasCost: context.gasCost };
+      },
+      batchIssueCredentials: (...args_1) => {
+        if (args_1.length !== 4) {
+          throw new __compactRuntime.CompactError(`batchIssueCredentials: expected 4 arguments (as invoked from Typescript), received ${args_1.length}`);
+        }
+        const contextOrig_0 = args_1[0];
+        const hash1_0 = args_1[1];
+        const hash2_0 = args_1[2];
+        const hash3_0 = args_1[3];
+        if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.currentQueryContext != undefined)) {
+          __compactRuntime.typeError('batchIssueCredentials',
+                                     'argument 1 (as invoked from Typescript)',
+                                     'cac.compact line 77 char 1',
+                                     'CircuitContext',
+                                     contextOrig_0)
+        }
+        if (!(hash1_0.buffer instanceof ArrayBuffer && hash1_0.BYTES_PER_ELEMENT === 1 && hash1_0.length === 32)) {
+          __compactRuntime.typeError('batchIssueCredentials',
+                                     'argument 1 (argument 2 as invoked from Typescript)',
+                                     'cac.compact line 77 char 1',
+                                     'Bytes<32>',
+                                     hash1_0)
+        }
+        if (!(hash2_0.buffer instanceof ArrayBuffer && hash2_0.BYTES_PER_ELEMENT === 1 && hash2_0.length === 32)) {
+          __compactRuntime.typeError('batchIssueCredentials',
+                                     'argument 2 (argument 3 as invoked from Typescript)',
+                                     'cac.compact line 77 char 1',
+                                     'Bytes<32>',
+                                     hash2_0)
+        }
+        if (!(hash3_0.buffer instanceof ArrayBuffer && hash3_0.BYTES_PER_ELEMENT === 1 && hash3_0.length === 32)) {
+          __compactRuntime.typeError('batchIssueCredentials',
+                                     'argument 3 (argument 4 as invoked from Typescript)',
+                                     'cac.compact line 77 char 1',
+                                     'Bytes<32>',
+                                     hash3_0)
+        }
+        const context = { ...contextOrig_0, gasCost: __compactRuntime.emptyRunningCost() };
+        const partialProofData = {
+          input: {
+            value: _descriptor_0.toValue(hash1_0).concat(_descriptor_0.toValue(hash2_0).concat(_descriptor_0.toValue(hash3_0))),
+            alignment: _descriptor_0.alignment().concat(_descriptor_0.alignment().concat(_descriptor_0.alignment()))
+          },
+          output: undefined,
+          publicTranscript: [],
+          privateTranscriptOutputs: []
+        };
+        const result_0 = this._batchIssueCredentials_0(context,
+                                                       partialProofData,
+                                                       hash1_0,
+                                                       hash2_0,
+                                                       hash3_0);
+        partialProofData.output = { value: [], alignment: [] };
+        return { result: result_0, context: context, proofData: partialProofData, gasCost: context.gasCost };
+      },
+      getCredentialCount(context, ...args_1) {
+        return { result: pureCircuits.getCredentialCount(...args_1), context };
+      },
       publicKey(context, ...args_1) {
         return { result: pureCircuits.publicKey(...args_1), context };
       }
@@ -286,14 +416,20 @@ export class Contract {
       verifyCredential: this.circuits.verifyCredential,
       proveGpaThreshold: this.circuits.proveGpaThreshold,
       proveDegreeMatch: this.circuits.proveDegreeMatch,
-      revokeCredential: this.circuits.revokeCredential
+      revokeCredential: this.circuits.revokeCredential,
+      suspendCredential: this.circuits.suspendCredential,
+      reinstateCredential: this.circuits.reinstateCredential,
+      batchIssueCredentials: this.circuits.batchIssueCredentials
     };
     this.provableCircuits = {
       issueCredential: this.circuits.issueCredential,
       verifyCredential: this.circuits.verifyCredential,
       proveGpaThreshold: this.circuits.proveGpaThreshold,
       proveDegreeMatch: this.circuits.proveDegreeMatch,
-      revokeCredential: this.circuits.revokeCredential
+      revokeCredential: this.circuits.revokeCredential,
+      suspendCredential: this.circuits.suspendCredential,
+      reinstateCredential: this.circuits.reinstateCredential,
+      batchIssueCredentials: this.circuits.batchIssueCredentials
     };
   }
   initialState(...args_0) {
@@ -324,6 +460,9 @@ export class Contract {
     state_0.setOperation('proveGpaThreshold', new __compactRuntime.ContractOperation());
     state_0.setOperation('proveDegreeMatch', new __compactRuntime.ContractOperation());
     state_0.setOperation('revokeCredential', new __compactRuntime.ContractOperation());
+    state_0.setOperation('suspendCredential', new __compactRuntime.ContractOperation());
+    state_0.setOperation('reinstateCredential', new __compactRuntime.ContractOperation());
+    state_0.setOperation('batchIssueCredentials', new __compactRuntime.ContractOperation());
     const context = __compactRuntime.createCircuitContext(__compactRuntime.dummyContractAddress(), constructorContext_0.initialZswapLocalState.coinPublicKey, state_0.data, constructorContext_0.initialPrivateState);
     const partialProofData = {
       input: { value: [], alignment: [] },
@@ -366,7 +505,7 @@ export class Contract {
                                                            partialProofData),
                                     __compactRuntime.convertFieldToBytes(32,
                                                                          0n,
-                                                                         'cac.compact line 20 char 59'));
+                                                                         'cac.compact line 21 char 59'));
     __compactRuntime.queryLedgerState(context,
                                       partialProofData,
                                       [
@@ -377,22 +516,6 @@ export class Contract {
                                                  value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(tmp_0),
                                                                                               alignment: _descriptor_0.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } }]);
-    const tmp_1 = 1n;
-    __compactRuntime.queryLedgerState(context,
-                                      partialProofData,
-                                      [
-                                       { idx: { cached: false,
-                                                pushPath: true,
-                                                path: [
-                                                       { tag: 'value',
-                                                         value: { value: _descriptor_9.toValue(0n),
-                                                                  alignment: _descriptor_9.alignment() } }] } },
-                                       { addi: { immediate: parseInt(__compactRuntime.valueToBigInt(
-                                                              { value: _descriptor_3.toValue(tmp_1),
-                                                                alignment: _descriptor_3.alignment() }
-                                                                .value
-                                                            )) } },
-                                       { ins: { cached: true, n: 1 } }]);
     state_0.data = new __compactRuntime.ChargedState(context.currentQueryContext.state.state);
     return {
       currentContractState: state_0,
@@ -433,8 +556,8 @@ export class Contract {
                                  result_0)
     }
     partialProofData.privateTranscriptOutputs.push({
-      value: _descriptor_3.toValue(result_0),
-      alignment: _descriptor_3.alignment()
+      value: _descriptor_1.toValue(result_0),
+      alignment: _descriptor_1.alignment()
     });
     return result_0;
   }
@@ -487,8 +610,8 @@ export class Contract {
                                                  value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(credentialHash_0),
                                                                                               alignment: _descriptor_0.alignment() }).encode() } },
                                        { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_1.toValue(1),
-                                                                                              alignment: _descriptor_1.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(1),
+                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } },
                                        { ins: { cached: true, n: 1 } }]);
     const tmp_0 = 1n;
@@ -502,15 +625,15 @@ export class Contract {
                                                          value: { value: _descriptor_9.toValue(0n),
                                                                   alignment: _descriptor_9.alignment() } }] } },
                                        { addi: { immediate: parseInt(__compactRuntime.valueToBigInt(
-                                                              { value: _descriptor_3.toValue(tmp_0),
-                                                                alignment: _descriptor_3.alignment() }
+                                                              { value: _descriptor_1.toValue(tmp_0),
+                                                                alignment: _descriptor_1.alignment() }
                                                                 .value
                                                             )) } },
                                        { ins: { cached: true, n: 1 } }]);
     return [];
   }
   _verifyCredential_0(context, partialProofData, credentialHash_0) {
-    const status_0 = _descriptor_1.fromValue(__compactRuntime.queryLedgerState(context,
+    const status_0 = _descriptor_2.fromValue(__compactRuntime.queryLedgerState(context,
                                                                                partialProofData,
                                                                                [
                                                                                 { dup: { n: 0 } },
@@ -537,7 +660,7 @@ export class Contract {
                        credentialHash_0,
                        minGpaScaled_0)
   {
-    const status_0 = _descriptor_1.fromValue(__compactRuntime.queryLedgerState(context,
+    const status_0 = _descriptor_2.fromValue(__compactRuntime.queryLedgerState(context,
                                                                                partialProofData,
                                                                                [
                                                                                 { dup: { n: 0 } },
@@ -566,7 +689,7 @@ export class Contract {
                       credentialHash_0,
                       expectedDegreeHash_0)
   {
-    const status_0 = _descriptor_1.fromValue(__compactRuntime.queryLedgerState(context,
+    const status_0 = _descriptor_2.fromValue(__compactRuntime.queryLedgerState(context,
                                                                                partialProofData,
                                                                                [
                                                                                 { dup: { n: 0 } },
@@ -623,12 +746,218 @@ export class Contract {
                                                  value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(credentialHash_0),
                                                                                               alignment: _descriptor_0.alignment() }).encode() } },
                                        { push: { storage: true,
-                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_1.toValue(2),
-                                                                                              alignment: _descriptor_1.alignment() }).encode() } },
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(3),
+                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } },
                                        { ins: { cached: true, n: 1 } }]);
     return [];
   }
+  _suspendCredential_0(context, partialProofData, credentialHash_0) {
+    __compactRuntime.assert(this._equal_3(this._publicKey_0(this._localSecretKey_0(context,
+                                                                                   partialProofData),
+                                                            __compactRuntime.convertFieldToBytes(32,
+                                                                                                 0n,
+                                                                                                 'cac.compact line 62 char 47')),
+                                          _descriptor_0.fromValue(__compactRuntime.queryLedgerState(context,
+                                                                                                    partialProofData,
+                                                                                                    [
+                                                                                                     { dup: { n: 0 } },
+                                                                                                     { idx: { cached: false,
+                                                                                                              pushPath: false,
+                                                                                                              path: [
+                                                                                                                     { tag: 'value',
+                                                                                                                       value: { value: _descriptor_9.toValue(1n),
+                                                                                                                                alignment: _descriptor_9.alignment() } }] } },
+                                                                                                     { popeq: { cached: false,
+                                                                                                                result: undefined } }]).value)),
+                            'Only accredited institution can suspend credentials');
+    const status_0 = _descriptor_2.fromValue(__compactRuntime.queryLedgerState(context,
+                                                                               partialProofData,
+                                                                               [
+                                                                                { dup: { n: 0 } },
+                                                                                { idx: { cached: false,
+                                                                                         pushPath: false,
+                                                                                         path: [
+                                                                                                { tag: 'value',
+                                                                                                  value: { value: _descriptor_9.toValue(2n),
+                                                                                                           alignment: _descriptor_9.alignment() } }] } },
+                                                                                { idx: { cached: false,
+                                                                                         pushPath: false,
+                                                                                         path: [
+                                                                                                { tag: 'value',
+                                                                                                  value: { value: _descriptor_0.toValue(credentialHash_0),
+                                                                                                           alignment: _descriptor_0.alignment() } }] } },
+                                                                                { popeq: { cached: false,
+                                                                                           result: undefined } }]).value);
+    __compactRuntime.assert(status_0 === 1,
+                            'Only valid credentials can be suspended');
+    __compactRuntime.queryLedgerState(context,
+                                      partialProofData,
+                                      [
+                                       { idx: { cached: false,
+                                                pushPath: true,
+                                                path: [
+                                                       { tag: 'value',
+                                                         value: { value: _descriptor_9.toValue(2n),
+                                                                  alignment: _descriptor_9.alignment() } }] } },
+                                       { push: { storage: false,
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(credentialHash_0),
+                                                                                              alignment: _descriptor_0.alignment() }).encode() } },
+                                       { push: { storage: true,
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(2),
+                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
+                                       { ins: { cached: false, n: 1 } },
+                                       { ins: { cached: true, n: 1 } }]);
+    return [];
+  }
+  _reinstateCredential_0(context, partialProofData, credentialHash_0) {
+    __compactRuntime.assert(this._equal_4(this._publicKey_0(this._localSecretKey_0(context,
+                                                                                   partialProofData),
+                                                            __compactRuntime.convertFieldToBytes(32,
+                                                                                                 0n,
+                                                                                                 'cac.compact line 70 char 47')),
+                                          _descriptor_0.fromValue(__compactRuntime.queryLedgerState(context,
+                                                                                                    partialProofData,
+                                                                                                    [
+                                                                                                     { dup: { n: 0 } },
+                                                                                                     { idx: { cached: false,
+                                                                                                              pushPath: false,
+                                                                                                              path: [
+                                                                                                                     { tag: 'value',
+                                                                                                                       value: { value: _descriptor_9.toValue(1n),
+                                                                                                                                alignment: _descriptor_9.alignment() } }] } },
+                                                                                                     { popeq: { cached: false,
+                                                                                                                result: undefined } }]).value)),
+                            'Only accredited institution can reinstate credentials');
+    const status_0 = _descriptor_2.fromValue(__compactRuntime.queryLedgerState(context,
+                                                                               partialProofData,
+                                                                               [
+                                                                                { dup: { n: 0 } },
+                                                                                { idx: { cached: false,
+                                                                                         pushPath: false,
+                                                                                         path: [
+                                                                                                { tag: 'value',
+                                                                                                  value: { value: _descriptor_9.toValue(2n),
+                                                                                                           alignment: _descriptor_9.alignment() } }] } },
+                                                                                { idx: { cached: false,
+                                                                                         pushPath: false,
+                                                                                         path: [
+                                                                                                { tag: 'value',
+                                                                                                  value: { value: _descriptor_0.toValue(credentialHash_0),
+                                                                                                           alignment: _descriptor_0.alignment() } }] } },
+                                                                                { popeq: { cached: false,
+                                                                                           result: undefined } }]).value);
+    __compactRuntime.assert(status_0 === 2,
+                            'Only suspended credentials can be reinstated');
+    __compactRuntime.queryLedgerState(context,
+                                      partialProofData,
+                                      [
+                                       { idx: { cached: false,
+                                                pushPath: true,
+                                                path: [
+                                                       { tag: 'value',
+                                                         value: { value: _descriptor_9.toValue(2n),
+                                                                  alignment: _descriptor_9.alignment() } }] } },
+                                       { push: { storage: false,
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(credentialHash_0),
+                                                                                              alignment: _descriptor_0.alignment() }).encode() } },
+                                       { push: { storage: true,
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(1),
+                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
+                                       { ins: { cached: false, n: 1 } },
+                                       { ins: { cached: true, n: 1 } }]);
+    return [];
+  }
+  _batchIssueCredentials_0(context, partialProofData, hash1_0, hash2_0, hash3_0)
+  {
+    __compactRuntime.assert(this._equal_5(this._publicKey_0(this._localSecretKey_0(context,
+                                                                                   partialProofData),
+                                                            __compactRuntime.convertFieldToBytes(32,
+                                                                                                 0n,
+                                                                                                 'cac.compact line 78 char 47')),
+                                          _descriptor_0.fromValue(__compactRuntime.queryLedgerState(context,
+                                                                                                    partialProofData,
+                                                                                                    [
+                                                                                                     { dup: { n: 0 } },
+                                                                                                     { idx: { cached: false,
+                                                                                                              pushPath: false,
+                                                                                                              path: [
+                                                                                                                     { tag: 'value',
+                                                                                                                       value: { value: _descriptor_9.toValue(1n),
+                                                                                                                                alignment: _descriptor_9.alignment() } }] } },
+                                                                                                     { popeq: { cached: false,
+                                                                                                                result: undefined } }]).value)),
+                            'Only accredited institution can issue credentials');
+    __compactRuntime.queryLedgerState(context,
+                                      partialProofData,
+                                      [
+                                       { idx: { cached: false,
+                                                pushPath: true,
+                                                path: [
+                                                       { tag: 'value',
+                                                         value: { value: _descriptor_9.toValue(2n),
+                                                                  alignment: _descriptor_9.alignment() } }] } },
+                                       { push: { storage: false,
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(hash1_0),
+                                                                                              alignment: _descriptor_0.alignment() }).encode() } },
+                                       { push: { storage: true,
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(1),
+                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
+                                       { ins: { cached: false, n: 1 } },
+                                       { ins: { cached: true, n: 1 } }]);
+    __compactRuntime.queryLedgerState(context,
+                                      partialProofData,
+                                      [
+                                       { idx: { cached: false,
+                                                pushPath: true,
+                                                path: [
+                                                       { tag: 'value',
+                                                         value: { value: _descriptor_9.toValue(2n),
+                                                                  alignment: _descriptor_9.alignment() } }] } },
+                                       { push: { storage: false,
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(hash2_0),
+                                                                                              alignment: _descriptor_0.alignment() }).encode() } },
+                                       { push: { storage: true,
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(1),
+                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
+                                       { ins: { cached: false, n: 1 } },
+                                       { ins: { cached: true, n: 1 } }]);
+    __compactRuntime.queryLedgerState(context,
+                                      partialProofData,
+                                      [
+                                       { idx: { cached: false,
+                                                pushPath: true,
+                                                path: [
+                                                       { tag: 'value',
+                                                         value: { value: _descriptor_9.toValue(2n),
+                                                                  alignment: _descriptor_9.alignment() } }] } },
+                                       { push: { storage: false,
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(hash3_0),
+                                                                                              alignment: _descriptor_0.alignment() }).encode() } },
+                                       { push: { storage: true,
+                                                 value: __compactRuntime.StateValue.newCell({ value: _descriptor_2.toValue(1),
+                                                                                              alignment: _descriptor_2.alignment() }).encode() } },
+                                       { ins: { cached: false, n: 1 } },
+                                       { ins: { cached: true, n: 1 } }]);
+    const tmp_0 = 3n;
+    __compactRuntime.queryLedgerState(context,
+                                      partialProofData,
+                                      [
+                                       { idx: { cached: false,
+                                                pushPath: true,
+                                                path: [
+                                                       { tag: 'value',
+                                                         value: { value: _descriptor_9.toValue(0n),
+                                                                  alignment: _descriptor_9.alignment() } }] } },
+                                       { addi: { immediate: parseInt(__compactRuntime.valueToBigInt(
+                                                              { value: _descriptor_1.toValue(tmp_0),
+                                                                alignment: _descriptor_1.alignment() }
+                                                                .value
+                                                            )) } },
+                                       { ins: { cached: true, n: 1 } }]);
+    return [];
+  }
+  _getCredentialCount_0() { return true; }
   _publicKey_0(sk_0, sequence_0) {
     return this._persistentHash_0([new Uint8Array([118, 101, 114, 105, 99, 114, 101, 100, 58, 112, 107, 58, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
                                    sequence_0,
@@ -643,6 +972,18 @@ export class Contract {
     return true;
   }
   _equal_2(x0, y0) {
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    return true;
+  }
+  _equal_3(x0, y0) {
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    return true;
+  }
+  _equal_4(x0, y0) {
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    return true;
+  }
+  _equal_5(x0, y0) {
     if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
@@ -694,7 +1035,7 @@ export function ledger(stateOrChargedState) {
         if (args_0.length !== 0) {
           throw new __compactRuntime.CompactError(`isEmpty: expected 0 arguments, received ${args_0.length}`);
         }
-        return _descriptor_2.fromValue(__compactRuntime.queryLedgerState(context,
+        return _descriptor_3.fromValue(__compactRuntime.queryLedgerState(context,
                                                                          partialProofData,
                                                                          [
                                                                           { dup: { n: 0 } },
@@ -738,11 +1079,11 @@ export function ledger(stateOrChargedState) {
         if (!(key_0.buffer instanceof ArrayBuffer && key_0.BYTES_PER_ELEMENT === 1 && key_0.length === 32)) {
           __compactRuntime.typeError('member',
                                      'argument 1',
-                                     'cac.compact line 17 char 1',
+                                     'cac.compact line 18 char 1',
                                      'Bytes<32>',
                                      key_0)
         }
-        return _descriptor_2.fromValue(__compactRuntime.queryLedgerState(context,
+        return _descriptor_3.fromValue(__compactRuntime.queryLedgerState(context,
                                                                          partialProofData,
                                                                          [
                                                                           { dup: { n: 0 } },
@@ -767,11 +1108,11 @@ export function ledger(stateOrChargedState) {
         if (!(key_0.buffer instanceof ArrayBuffer && key_0.BYTES_PER_ELEMENT === 1 && key_0.length === 32)) {
           __compactRuntime.typeError('lookup',
                                      'argument 1',
-                                     'cac.compact line 17 char 1',
+                                     'cac.compact line 18 char 1',
                                      'Bytes<32>',
                                      key_0)
         }
-        return _descriptor_1.fromValue(__compactRuntime.queryLedgerState(context,
+        return _descriptor_2.fromValue(__compactRuntime.queryLedgerState(context,
                                                                          partialProofData,
                                                                          [
                                                                           { dup: { n: 0 } },
@@ -795,7 +1136,7 @@ export function ledger(stateOrChargedState) {
           throw new __compactRuntime.CompactError(`iter: expected 0 arguments, received ${args_0.length}`);
         }
         const self_0 = state.asArray()[2];
-        return self_0.asMap().keys().map(  (key) => {    const value = self_0.asMap().get(key).asCell();    return [      _descriptor_0.fromValue(key.value),      _descriptor_1.fromValue(value.value)    ];  })[Symbol.iterator]();
+        return self_0.asMap().keys().map(  (key) => {    const value = self_0.asMap().get(key).asCell();    return [      _descriptor_0.fromValue(key.value),      _descriptor_2.fromValue(value.value)    ];  })[Symbol.iterator]();
       }
     }
   };
@@ -809,6 +1150,12 @@ const _dummyContract = new Contract({
   degreeIdHash: (...args) => undefined
 });
 export const pureCircuits = {
+  getCredentialCount: (...args_0) => {
+    if (args_0.length !== 0) {
+      throw new __compactRuntime.CompactError(`getCredentialCount: expected 0 arguments (as invoked from Typescript), received ${args_0.length}`);
+    }
+    return _dummyContract._getCredentialCount_0();
+  },
   publicKey: (...args_0) => {
     if (args_0.length !== 2) {
       throw new __compactRuntime.CompactError(`publicKey: expected 2 arguments (as invoked from Typescript), received ${args_0.length}`);
@@ -818,14 +1165,14 @@ export const pureCircuits = {
     if (!(sk_0.buffer instanceof ArrayBuffer && sk_0.BYTES_PER_ELEMENT === 1 && sk_0.length === 32)) {
       __compactRuntime.typeError('publicKey',
                                  'argument 1',
-                                 'cac.compact line 60 char 1',
+                                 'cac.compact line 90 char 1',
                                  'Bytes<32>',
                                  sk_0)
     }
     if (!(sequence_0.buffer instanceof ArrayBuffer && sequence_0.BYTES_PER_ELEMENT === 1 && sequence_0.length === 32)) {
       __compactRuntime.typeError('publicKey',
                                  'argument 2',
-                                 'cac.compact line 60 char 1',
+                                 'cac.compact line 90 char 1',
                                  'Bytes<32>',
                                  sequence_0)
     }

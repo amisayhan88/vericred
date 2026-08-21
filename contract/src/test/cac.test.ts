@@ -20,6 +20,7 @@ describe('VeriCred Compact Smart Contract', () => {
   it('validates credential status enum values', () => {
     expect(CredentialStatus.UNISSUED).toBeDefined();
     expect(CredentialStatus.VALID).toBeDefined();
+    expect(CredentialStatus.SUSPENDED).toBeDefined();
     expect(CredentialStatus.REVOKED).toBeDefined();
   });
 

@@ -25,6 +25,7 @@ import { type MidnightProvider, type UnboundTransaction, type WalletProvider } f
 import { ttlOneHour } from '@midnight-ntwrk/midnight-js-utils';
 import { type WalletFacade } from '@midnight-ntwrk/wallet-sdk-facade';
 import type { Logger } from 'pino';
+import axios from 'axios';
 
 import { getInitialShieldedState } from './wallet-utils';
 import { type DustWalletOptions, type EnvironmentConfiguration, FluentWalletBuilder } from '@midnight-ntwrk/testkit-js';
@@ -80,7 +81,34 @@ export class MidnightWalletProvider implements MidnightProvider, WalletProvider 
     return this.wallet.finalizeRecipe(signedRecipe);
   }
 
-  submitTx(tx: FinalizedTransaction): Promise<string> {
+  async submitTx(tx: FinalizedTransaction): Promise<string> {
+    try {
+      if (typeof tx.serialize === 'function') {
+        const { ApiPromise, WsProvider } = await import('@polkadot/api');
+        const { u8aToHex } = await import('@polkadot/util');
+        const api = await ApiPromise.create({
+          provider: new WsProvider(this.env.nodeWS),
+          throwOnConnect: false,
+          noInitWarn: true,
+        });
+        const hex = u8aToHex(tx.serialize());
+        const extrinsic = api.tx.midnight.sendMnTransaction(hex);
+        const extrinsicHex = extrinsic.toHex();
+        await api.disconnect().catch(() => {});
+        const res = await axios.post(this.env.node, {
+          jsonrpc: '2.0',
+          method: 'author_submitExtrinsic',
+          params: [extrinsicHex],
+          id: 1,
+        });
+        if (res.data?.result) {
+          this.logger.info(`Transaction submitted via Substrate HTTP RPC: ${res.data.result}`);
+          return res.data.result;
+        }
+      }
+    } catch (e: any) {
+      this.logger.warn(`Direct HTTP RPC submission fallback: ${e?.message || e}`);
+    }
     return this.wallet.submitTransaction(tx);
   }
 

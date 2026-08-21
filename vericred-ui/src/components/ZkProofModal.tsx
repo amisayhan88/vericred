@@ -38,64 +38,59 @@ export const ZkProofModal: React.FC<ZkProofModalProps> = ({ credential, onClose 
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
-      <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 max-w-lg w-full border border-slate-200 dark:border-slate-800 shadow-2xl relative">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink/40 backdrop-blur-sm">
+      <div className="bg-canvas rounded-xl p-6 max-w-lg w-full border border-hairline shadow-card relative">
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 text-slate-400 hover:text-slate-600 dark:hover:text-white transition-colors"
+          className="absolute top-5 right-5 text-muted hover:text-ink transition-colors"
         >
           <X className="w-5 h-5" />
         </button>
 
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-900/40 border border-amber-300 dark:border-amber-700 flex items-center justify-center text-amber-700 dark:text-amber-300">
-            <ShieldCheck className="w-6 h-6" />
+          <div className="w-10 h-10 rounded-lg bg-surface-card flex items-center justify-center text-ink">
+            <ShieldCheck className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-lg font-bold text-slate-900 dark:text-white">Zero-Knowledge Prover</h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400">Generate selective disclosure witness proof</p>
+            <h2 className="text-title-md text-ink">Zero-Knowledge Prover</h2>
+            <p className="text-caption text-muted">Generate selective disclosure witness proof</p>
           </div>
         </div>
 
         {!generatedProof ? (
-          <div className="mt-6 space-y-4 text-xs">
-            <div className="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200/60 dark:border-amber-800/60 text-amber-900 dark:text-amber-200 leading-relaxed">
-              <span className="font-semibold block mb-1">Privacy Guarantee</span>
+          <div className="mt-6 space-y-4">
+            {/* Privacy Notice */}
+            <div className="card-feature p-4 text-body-sm text-body leading-relaxed">
+              <span className="font-semibold text-ink block mb-1">Privacy Guarantee</span>
               This circuit generates a cryptographic proof that proves your statement to verifiers without revealing your name, student ID, or exact GPA.
             </div>
 
+            {/* Claim Type Selector */}
             <div>
-              <label className="font-semibold text-slate-700 dark:text-slate-300 block mb-1.5">Select Claim Type</label>
-              <div className="grid grid-cols-2 gap-2">
+              <label className="text-body-sm font-semibold text-ink block mb-2">Select Claim Type</label>
+              <div className="nav-pill-group w-full">
                 <button
                   type="button"
                   onClick={() => setProofType('GPA_THRESHOLD')}
-                  className={`p-3 rounded-xl border font-semibold text-center transition-all ${
-                    proofType === 'GPA_THRESHOLD'
-                      ? 'bg-amber-100/80 text-amber-900 dark:bg-amber-500/20 dark:text-amber-300 border-amber-400 dark:border-amber-600 shadow-sm'
-                      : 'border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
-                  }`}
+                  className={`nav-pill-item flex-1 text-center ${proofType === 'GPA_THRESHOLD' ? 'active' : ''}`}
                 >
-                  GPA Threshold Proof
+                  GPA Threshold
                 </button>
                 <button
                   type="button"
                   onClick={() => setProofType('DEGREE_VERIFICATION')}
-                  className={`p-3 rounded-xl border font-semibold text-center transition-all ${
-                    proofType === 'DEGREE_VERIFICATION'
-                      ? 'bg-amber-100/80 text-amber-900 dark:bg-amber-500/20 dark:text-amber-300 border-amber-400 dark:border-amber-600 shadow-sm'
-                      : 'border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
-                  }`}
+                  className={`nav-pill-item flex-1 text-center ${proofType === 'DEGREE_VERIFICATION' ? 'active' : ''}`}
                 >
-                  Degree Match Proof
+                  Degree Match
                 </button>
               </div>
             </div>
 
+            {/* GPA Slider */}
             {proofType === 'GPA_THRESHOLD' && (
               <div>
-                <label className="font-semibold text-slate-700 dark:text-slate-300 block mb-1.5">
-                  Minimum Required GPA Threshold: <span className="text-emerald-600 dark:text-emerald-400 font-bold">{gpaThreshold.toFixed(2)}</span>
+                <label className="text-body-sm font-semibold text-ink block mb-1.5">
+                  Minimum GPA Threshold: <span className="text-success font-semibold">{gpaThreshold.toFixed(2)}</span>
                 </label>
                 <input
                   type="range"
@@ -104,7 +99,7 @@ export const ZkProofModal: React.FC<ZkProofModalProps> = ({ credential, onClose 
                   step="0.05"
                   value={gpaThreshold}
                   onChange={(e) => setGpaThreshold(parseFloat(e.target.value))}
-                  className="w-full accent-emerald-500 cursor-pointer"
+                  className="w-full accent-primary cursor-pointer"
                 />
               </div>
             )}
@@ -112,7 +107,7 @@ export const ZkProofModal: React.FC<ZkProofModalProps> = ({ credential, onClose 
             <button
               onClick={handleGenerate}
               disabled={isGenerating}
-              className="mt-6 w-full py-3 rounded-xl bg-gradient-to-r from-amber-400 via-amber-300 to-emeraldAcc-500 text-slate-950 font-bold hover:opacity-95 shadow-glow transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50"
+              className="btn-primary w-full mt-4"
             >
               {isGenerating ? (
                 <>
@@ -128,17 +123,19 @@ export const ZkProofModal: React.FC<ZkProofModalProps> = ({ credential, onClose 
             </button>
           </div>
         ) : (
-          <div className="mt-6 space-y-4 text-xs">
-            <div className="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-900 dark:text-emerald-200 flex items-center gap-3">
-              <CheckCircle2 className="w-6 h-6 text-emerald-500 shrink-0" />
+          <div className="mt-6 space-y-4">
+            {/* Success Result */}
+            <div className="p-4 rounded-lg bg-[#ecfdf5] border border-[#a7f3d0] text-body flex items-center gap-3">
+              <CheckCircle2 className="w-6 h-6 text-success shrink-0" />
               <div>
-                <h4 className="font-bold text-sm">ZK Proof Verified & Signed</h4>
-                <p className="text-xs text-emerald-700 dark:text-emerald-300">{generatedProof.verifiedClaim}</p>
+                <h4 className="text-title-sm text-ink">ZK Proof Verified & Signed</h4>
+                <p className="text-caption text-muted mt-0.5">{generatedProof.verifiedClaim}</p>
               </div>
             </div>
 
-            <div className="p-3 rounded-xl bg-slate-900 text-slate-100 font-mono text-[11px] space-y-1 overflow-x-auto">
-              <div className="text-amber-400 font-bold">// Midnight ZK Proof Packet</div>
+            {/* Proof Packet */}
+            <div className="p-3 rounded-md bg-surface-dark text-on-dark font-mono text-caption space-y-1 overflow-x-auto">
+              <div className="text-brand-accent font-semibold">// Midnight ZK Proof Packet</div>
               <div>Proof ID: {generatedProof.id}</div>
               <div>Status: {generatedProof.status}</div>
               <div>Timestamp: {generatedProof.timestamp}</div>
@@ -148,14 +145,14 @@ export const ZkProofModal: React.FC<ZkProofModalProps> = ({ credential, onClose 
             <div className="flex items-center gap-2 pt-2">
               <button
                 onClick={handleCopy}
-                className="flex-1 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-semibold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors flex items-center justify-center gap-1.5"
+                className="btn-secondary flex-1"
               >
-                {copied ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
-                <span>{copied ? 'Copied to Clipboard' : 'Copy Proof Packet'}</span>
+                {copied ? <Check className="w-3.5 h-3.5 text-success" /> : <Copy className="w-3.5 h-3.5" />}
+                <span>{copied ? 'Copied' : 'Copy Proof'}</span>
               </button>
               <button
                 onClick={onClose}
-                className="px-5 py-2.5 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors"
+                className="btn-primary px-6"
               >
                 Done
               </button>

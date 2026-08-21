@@ -9,10 +9,158 @@
 
 ## Level 1 — Compact Contract on Preprod
 
-Level 1 delivered a working Compact contract, local unit tests, and a Preprod deployment with documented privacy behavior.
+Level 1 delivered a working Compact contract, local unit tests, a Preprod deployment with documented privacy behavior, and a full-stack privacy DApp interface.
 
-📄 **Product Proposal**: [PROPOSAL.md](file:///Users/indrajitari/Projects/midmarket/project%204/PROPOSAL.md) | [proposal.ms](file:///Users/indrajitari/Projects/midmarket/project%204/proposal.ms)
+📄 **Product Proposal**: [PROPOSAL.md](PROPOSAL.md) | [proposal.ms](proposal.ms)  
 🎥 **1-Minute DApp Demo Video**: [https://youtu.be/AO1LrfsJX2c?si=hAST_DOITezVdSZ2](https://youtu.be/AO1LrfsJX2c?si=hAST_DOITezVdSZ2)
+
+---
+
+## 🏛️ Project Architecture
+
+VeriCred is built upon Midnight Network's dual-state architecture, separating public on-chain ledger state from private off-chain witness state via Compact zero-knowledge circuits.
+
+```mermaid
+flowchart TB
+    subgraph ClientLayer["🖥️ Frontend & Client Layer"]
+        UI["VeriCred Web DApp\n(React 18 + Vite + Tailwind CSS)"]
+        MobileUI["Responsive Mobile View\n(Clean Single-Column Layout)"]
+        Store["Zustand State Store\n(useWalletStore)"]
+        Provider["Midnight Wallet Provider\n(Lace / Testkit FluentWallet)"]
+    end
+
+    subgraph MiddlewareLayer["⚙️ Midnight Middleware & Prover"]
+        API["Midnight JS API Layer\n(@midnight-ntwrk/midnight-js-contracts)"]
+        StateDB["LevelDB Private State Store\n(preprod-state-seed)"]
+        ProofServer["Docker Proof Server (Port 6300)\n(ZK Proof Generator / Verifier)"]
+        ZkConfig["Node ZkConfig Provider\n(Managed Circuit Keys)"]
+    end
+
+    subgraph ContractLayer["📜 Compact Smart Contract Layer"]
+        CAC["cac.compact (VeriCred CAC)\n• Dual-State Model\n• 8 Compiled ZK Circuits\n• Witness Execution"]
+        PublicLedger["Public Ledger State\n• totalCredentialsIssued\n• institutionOwner\n• credentialStatus Map"]
+        PrivateWitness["Private Witness State\n• localSecretKey\n• studentGpaScaled\n• degreeIdHash"]
+    end
+
+    subgraph NetworkLayer["🌐 Midnight Preprod Network"]
+        Indexer["Midnight GraphQL Indexer\n(api/v4/graphql & WebSocket)"]
+        SubstrateNode["Substrate RPC Node\n(author_submitExtrinsic / Mempool)"]
+        DUST["DUST Ledger & Zswap\n(Shielded State Tracking)"]
+    end
+
+    UI --> Store
+    MobileUI --> Store
+    Store --> Provider
+    Provider --> API
+    API --> StateDB
+    API --> ProofServer
+    API --> ZkConfig
+    ProofServer --> CAC
+    CAC --> PublicLedger
+    CAC --> PrivateWitness
+    API --> Indexer
+    API --> SubstrateNode
+    SubstrateNode --> DUST
+```
+
+---
+
+## 👥 User Interaction & Verification Flow
+
+The sequence diagram below demonstrates the privacy-preserving lifecycle of an academic credential:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Issuer as 🏛️ University (Issuer)
+    actor Student as 🎓 Student (Holder)
+    actor Verifier as 💼 Employer (Verifier)
+    participant DApp as 🖥️ VeriCred DApp
+    participant ProofSrv as ⚡ Proof Server (:6300)
+    participant Contract as 📜 cac.compact
+    participant Chain as 🌐 Midnight Preprod
+
+    Note over Issuer,Chain: Phase 1: Credential Issuance
+    Issuer->>DApp: Input student record (GPA: 3.95, CS Degree, 2026)
+    DApp->>ProofSrv: Compute off-chain hash & generate issuance proof
+    ProofSrv->>Contract: Execute issueCredential(credentialHash, VALID)
+    Contract->>Chain: Update public credentialStatus[hash] = VALID (1)
+    DApp-->>Student: Deliver cryptographic credential to private vault
+
+    Note over Student,Chain: Phase 2: Zero-Knowledge Selective Disclosure
+    Verifier->>Student: Request proof: "Is GPA ≥ 3.50 & Degree Valid?"
+    Student->>DApp: Select credential & specify predicate (minGpa = 3.50)
+    DApp->>ProofSrv: Generate ZK Proof via proveGpaThreshold circuit
+    Note over ProofSrv: Private witness (3.95) satisfies predicate (3.95 ≥ 3.50)<br/>Actual GPA never leaves student device!
+    ProofSrv-->>DApp: Zero-Knowledge Proof payload (zkProofBytes)
+
+    Note over Verifier,Chain: Phase 3: Instant On-Chain Verification
+    Student->>Verifier: Transmit ZK Proof & Credential Hash
+    Verifier->>DApp: Submit proof for verification
+    DApp->>Chain: Query public status & verify ZK proof validity
+    Chain-->>Verifier: ✅ VERIFIED: Candidate qualifies (GPA ≥ 3.50), exact GPA concealed!
+```
+
+---
+
+## 📱 Web & Mobile UI
+
+VeriCred features a minimalist monochrome design system inspired by Cal.com and Linear, with responsive layouts across desktop and mobile screens.
+
+### Desktop Dashboard (Credential Vault & Analytics)
+![VeriCred Desktop UI](docs/assets/desktop_ui.png)
+
+### Mobile Responsive View
+<p align="center">
+  <img src="docs/assets/mobile_ui.png" alt="VeriCred Mobile UI" width="375" />
+</p>
+
+### Interactive Modals & Workflow Views
+| Credential Issuance | ZK Proof Generator | Verification Modal |
+| :---: | :---: | :---: |
+| ![Issuance](image.png) | ![ZK Proof](image-1.png) | ![Verify](image-2.png) |
+
+### CI/CD Automation Pipeline
+![CI/CD Pipeline Run](image-3.png)
+
+---
+
+## 📜 Project Smart Contracts
+
+### 1. `contract/src/cac.compact` (Primary VeriCred Contract)
+The core confidential academic credentials contract compiled with Compact 0.23, featuring **8 zero-knowledge circuits**:
+
+```compact
+pragma language_version >= 0.20;
+
+export enum CredentialStatus {
+  NONE = 0,
+  VALID = 1,
+  REVOKED = 2,
+  EXPIRED = 3
+}
+
+export ledger totalCredentialsIssued: Counter;
+export ledger institutionOwner: Bytes<32>;
+export ledger credentialStatus: Map<Bytes<32>, CredentialStatus>;
+
+witness localSecretKey(): Bytes<32>;
+witness studentGpaScaled(): Uint<32>;
+witness degreeIdHash(): Bytes<32>;
+witness graduationYearSecret(): Uint<32>;
+```
+
+#### Exported ZK Circuits:
+| Circuit Name | Parameters | Privacy Level | Purpose |
+| --- | --- | --- | --- |
+| `constructor` | `initialInstitution: Bytes<32>` | Public Initialization | Deploys contract and sets the authorized institution owner hash. |
+| `issueCredential` | `credentialHash: Bytes<32>, status: CredentialStatus` | Issuer Witness Protected | Validates issuer secret key and records new credential hash on ledger. |
+| `revokeCredential` | `credentialHash: Bytes<32>` | Issuer Witness Protected | Revokes an invalid or expired degree hash. |
+| `reactivateCredential`| `credentialHash: Bytes<32>` | Issuer Witness Protected | Restores a credential from revoked/expired state. |
+| `proveGpaThreshold` | `credentialHash: Bytes<32>, minGpaScaled: Uint<32>` | **Zero-Knowledge Circuit** | Proves student GPA ≥ min threshold without revealing actual GPA. |
+| `proveDegreeIssued` | `credentialHash: Bytes<32>, expectedDegreeIdHash: Bytes<32>` | **Zero-Knowledge Circuit** | Proves qualification matches requested degree without leaking transcript. |
+| `proveGraduationYear`| `credentialHash: Bytes<32>, expectedGradYear: Uint<32>` | **Zero-Knowledge Circuit** | Proves graduation recency without revealing personal education history. |
+| `verifyCredentialStatus`| `credentialHash: Bytes<32>` | Public Read | Verifies active status of a credential hash on-chain. |
 
 ---
 
@@ -36,16 +184,6 @@ Level 1 delivered a working Compact contract, local unit tests, and a Preprod de
 
 The `cac.compact` smart contract separates data into on-chain public ledger state and off-chain private witness state:
 
-```compact
-export ledger totalCredentialsIssued: Counter;
-export ledger institutionOwner: Bytes<32>;
-export ledger credentialStatus: Map<Bytes<32>, CredentialStatus>;
-
-witness localSecretKey(): Bytes<32>;
-witness studentGpaScaled(): Uint<32>;
-witness degreeIdHash(): Bytes<32>;
-```
-
 ### 👁️ What an On-Chain Observer CAN Learn (PUBLIC Data)
 - **Total Credentials Counter**: The cumulative number of credentials issued (`totalCredentialsIssued`).
 - **Institution Public Key Hash**: The public key hash (`institutionOwner`) of the authorized issuing authority.
@@ -64,23 +202,21 @@ witness degreeIdHash(): Bytes<32>;
 
 | Network | Contract Address / Status | Verification Explorer Link |
 | --- | --- | --- |
-| **Preprod** | `a746a03e40e6e4b36ec451548e355f2611657c2334e0e7594c3d14d4ef8da1de` | [🌐 Midnight Explorer](https://preprod.midnightexplorer.com) \| [🌐 Subscan](https://midnight-preprod.subscan.io) \| [🌐 1am Explorer](https://explorer.1am.xyz) |
+| **Preprod** | `3121b7274109a3ca0de55796986e0cae838632d69aa8521f6b1d8fa46f685661` | [🌐 Midnight Explorer](https://preprod.midnightexplorer.com/contract/3121b7274109a3ca0de55796986e0cae838632d69aa8521f6b1d8fa46f685661) \| [🌐 Subscan](https://midnight-preprod.subscan.io) \| [🌐 1am Explorer](https://explorer.1am.xyz) |
 | **Undeployed** | `3523aa3006329b8e763ba2cc655fb9a0e25833d2f11072c1d50146a830074d0b` | Development Ledger ID |
 
 ### Deployer Wallet Address (Preprod)
-`mn_addr_preprod18hl0hkw2sjdwuwztatxzp2mhwpre2w4hc9tlyx0l457k8dxd0fsqrda6jm`
-
-> **Note**: Fund this address from the Midnight Preprod Faucet when deploying or invoking smart contract functions.
+`mn_addr_preprod1xzej9p78pa65rywz4085z9ee75wanmq7gq5k88alrm3j6q8p3wzsr5gtj4`
 
 ---
 
 ## 🛠️ Tech Stack & Prerequisites
 
 ### Tech Stack
-- **Midnight Network**
+- **Midnight Network** (Preprod)
 - **Compact Language (v0.23)**
 - **Node.js (v22+)**
-- **Docker & Compose**
+- **Docker & Compose** (Proof Server)
 - **React / Vite / Tailwind CSS / Zustand**
 
 ### Prerequisites
@@ -115,7 +251,7 @@ npm run dev
 ## 🧪 Local Test Output (14/14 Passing)
 
 ```text
- RUN  v4.1.10 /Users/indrajitari/Projects/midmarket/project 4/contract
+ RUN  v4.1.10 /Users/indrajitari/Projects/midnight/DV-portal/contract
 
  ✓ src/test/cac.test.ts (5 tests)
    ✓ initializes private state and witnesses correctly
@@ -132,18 +268,6 @@ npm run dev
 
 ---
 
-## 🖼️ Screenshots & Evidence
-
-### Project Demo & DApp Screenshots
-![VeriCred DApp UI Screenshot 1](image.png)
-![VeriCred DApp UI Screenshot 2](image-1.png)
-![VeriCred DApp UI Screenshot 3](image-2.png)
-
-### CI/CD Workflow Screenshot
-![VeriCred GitHub Actions CI/CD Pipeline Run](image-3.png)
-
----
-
 ## 📁 Repository Folder Structure
 
 ```
@@ -151,28 +275,31 @@ DV-portal/
 ├── .github/workflows/ci.yml       # GitHub Actions CI/CD Pipeline
 ├── contract/                       # Compact Smart Contract & Circuits (cac.compact)
 │   ├── src/
-│   │   ├── cac.compact            # VeriCred Compact Contract
-│   │   ├── index.ts               # Contract bindings
+│   │   ├── cac.compact            # VeriCred Compact Contract (8 ZK circuits)
+│   │   ├── index.ts               # Contract bindings & exports
 │   │   ├── cac-witnesses.ts       # Private state witness definitions
+│   │   ├── managed/cac/           # Compiled ZK circuit keys & artifacts
 │   │   └── test/
 │   │       ├── cac.test.ts        # Contract unit tests (Vitest)
 │   │       └── bboard.test.ts
 │   └── package.json
 ├── api/                            # Midnight JS API Layer
+├── docs/assets/                    # Architecture & UI Screenshots
+│   ├── desktop_ui.png             # Desktop DApp UI Screenshot
+│   └── mobile_ui.png              # Mobile DApp UI Screenshot
 ├── vericred-ui/                    # Production React / Vite UI Application
 │   ├── src/
 │   │   ├── App.tsx                # App Router & Subroute Views
-│   │   ├── components/            # UI Components & WalletModal
+│   │   ├── components/            # UI Components & Responsive Layouts
 │   │   ├── store/
 │   │   │   └── useWalletStore.ts  # Zustand State Management Store
 │   │   └── lib/
-│   │       └── contract-client.ts # Contract Client
+│   │       └── contract-client.ts # Midnight Contract Client
 │   └── package.json
-├── vericred-cli/                   # CLI Interface
+├── vericred-cli/                   # CLI Interface & MidnightWalletProvider
 ├── Dockerfile                      # Production Multi-Stage Dockerfile
 ├── docker-compose.yml              # Local Proof Server Stack
 ├── package.json                    # Root Workspace Configuration
 ├── PROPOSAL.md                     # Product Proposal Document
-├── proposal.ms                     # Product Proposal Document (MS)
 └── README.md                       # Main README Documentation
 ```

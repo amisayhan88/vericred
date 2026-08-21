@@ -1,6 +1,10 @@
 import type * as __compactRuntime from '@midnight-ntwrk/compact-runtime';
 
-export enum CredentialStatus { UNISSUED = 0, VALID = 1, REVOKED = 2 }
+export enum CredentialStatus { UNISSUED = 0,
+                               VALID = 1,
+                               SUSPENDED = 2,
+                               REVOKED = 3
+}
 
 export type Witnesses<PS> = {
   localSecretKey(context: __compactRuntime.WitnessContext<Ledger, PS>): [PS, Uint8Array];
@@ -21,6 +25,14 @@ export type ImpureCircuits<PS> = {
                    expectedDegreeHash_0: Uint8Array): __compactRuntime.CircuitResults<PS, boolean>;
   revokeCredential(context: __compactRuntime.CircuitContext<PS>,
                    credentialHash_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
+  suspendCredential(context: __compactRuntime.CircuitContext<PS>,
+                    credentialHash_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
+  reinstateCredential(context: __compactRuntime.CircuitContext<PS>,
+                      credentialHash_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
+  batchIssueCredentials(context: __compactRuntime.CircuitContext<PS>,
+                        hash1_0: Uint8Array,
+                        hash2_0: Uint8Array,
+                        hash3_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
 }
 
 export type ProvableCircuits<PS> = {
@@ -36,9 +48,18 @@ export type ProvableCircuits<PS> = {
                    expectedDegreeHash_0: Uint8Array): __compactRuntime.CircuitResults<PS, boolean>;
   revokeCredential(context: __compactRuntime.CircuitContext<PS>,
                    credentialHash_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
+  suspendCredential(context: __compactRuntime.CircuitContext<PS>,
+                    credentialHash_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
+  reinstateCredential(context: __compactRuntime.CircuitContext<PS>,
+                      credentialHash_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
+  batchIssueCredentials(context: __compactRuntime.CircuitContext<PS>,
+                        hash1_0: Uint8Array,
+                        hash2_0: Uint8Array,
+                        hash3_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
 }
 
 export type PureCircuits = {
+  getCredentialCount(): boolean;
   publicKey(sk_0: Uint8Array, sequence_0: Uint8Array): Uint8Array;
 }
 
@@ -55,6 +76,15 @@ export type Circuits<PS> = {
                    expectedDegreeHash_0: Uint8Array): __compactRuntime.CircuitResults<PS, boolean>;
   revokeCredential(context: __compactRuntime.CircuitContext<PS>,
                    credentialHash_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
+  suspendCredential(context: __compactRuntime.CircuitContext<PS>,
+                    credentialHash_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
+  reinstateCredential(context: __compactRuntime.CircuitContext<PS>,
+                      credentialHash_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
+  batchIssueCredentials(context: __compactRuntime.CircuitContext<PS>,
+                        hash1_0: Uint8Array,
+                        hash2_0: Uint8Array,
+                        hash3_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
+  getCredentialCount(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, boolean>;
   publicKey(context: __compactRuntime.CircuitContext<PS>,
             sk_0: Uint8Array,
             sequence_0: Uint8Array): __compactRuntime.CircuitResults<PS, Uint8Array>;

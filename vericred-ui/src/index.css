@@ -1,41 +1,179 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Manrope:wght@600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --color-primary: #111111;
+    --color-primary-active: #242424;
+    --color-canvas: #ffffff;
+    --color-surface-card: #f5f5f5;
+    --color-surface-soft: #f8f9fa;
+    --color-surface-dark: #101010;
+    --color-surface-dark-elevated: #1a1a1a;
+    --color-ink: #111111;
+    --color-body: #374151;
+    --color-muted: #6b7280;
+    --color-hairline: #e5e7eb;
+    --color-on-primary: #ffffff;
+    --color-on-dark: #ffffff;
+    --color-on-dark-soft: #a1a1aa;
+    --color-success: #10b981;
+    --color-error: #ef4444;
+    --color-brand-accent: #3b82f6;
+    --shadow-soft: 0 1px 2px rgba(0,0,0,0.05);
+    --shadow-card: 0 4px 12px rgba(0,0,0,0.08);
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --radius-pill: 9999px;
+  }
+
+  html {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
   body {
-    @apply bg-slate-50 text-slate-900 antialiased font-sans selection:bg-amber-200 selection:text-slate-900 dark:bg-slate-950 dark:text-slate-100;
+    @apply bg-canvas text-ink;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  ::selection {
+    background: #e5e7eb;
+    color: #111111;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Inter', 'Manrope', sans-serif;
+    font-weight: 600;
   }
 }
 
-.bg-pattern-grid {
-  background-size: 32px 32px;
-  background-image: 
-    linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+@layer components {
+  /* Primary CTA Button — DESIGN.MD button-primary */
+  .btn-primary {
+    @apply bg-primary text-on-primary font-semibold;
+    font-size: 14px;
+    line-height: 1;
+    padding: 12px 20px;
+    height: 40px;
+    border-radius: var(--radius-md);
+    transition: background-color 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .btn-primary:hover {
+    background-color: var(--color-primary-active);
+  }
+  .btn-primary:disabled {
+    @apply bg-primary-disabled text-muted;
+    cursor: not-allowed;
+  }
+
+  /* Secondary Button — DESIGN.MD button-secondary */
+  .btn-secondary {
+    @apply bg-canvas text-ink font-semibold;
+    font-size: 14px;
+    line-height: 1;
+    padding: 12px 20px;
+    height: 40px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-hairline);
+    transition: background-color 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .btn-secondary:hover {
+    background-color: var(--color-surface-soft);
+  }
+
+  /* Text Input — DESIGN.MD text-input */
+  .input-field {
+    @apply bg-canvas text-ink;
+    font-size: 16px;
+    line-height: 1.5;
+    padding: 10px 14px;
+    height: 40px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-hairline);
+    width: 100%;
+    transition: border-color 0.15s ease;
+  }
+  .input-field:focus {
+    outline: none;
+    border-color: var(--color-ink);
+  }
+
+  /* Feature Card — DESIGN.MD feature-card */
+  .card-feature {
+    background: var(--color-surface-card);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+  }
+
+  /* Content Card — white with hairline */
+  .card-content {
+    background: var(--color-canvas);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+  }
+
+  /* Badge Pill — DESIGN.MD badge-pill */
+  .badge-pill {
+    @apply text-ink;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.4;
+    padding: 4px 12px;
+    border-radius: var(--radius-pill);
+    background: var(--color-surface-card);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* Nav Pill Group — DESIGN.MD nav-pill-group */
+  .nav-pill-group {
+    background: var(--color-surface-soft);
+    border-radius: var(--radius-pill);
+    padding: 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .nav-pill-item {
+    @apply text-muted;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 14px;
+    border-radius: var(--radius-md);
+    transition: all 0.15s ease;
+    cursor: pointer;
+  }
+  .nav-pill-item.active,
+  .nav-pill-item:hover {
+    @apply text-ink bg-canvas;
+    box-shadow: var(--shadow-soft);
+  }
 }
 
-.dark .bg-pattern-grid {
-  background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-}
-
-.animated-border {
-  position: relative;
-  border-radius: 1.25rem;
-  background: linear-gradient(60deg, #facc15, #10b981, #eab308, #34d399);
-  background-size: 300% 300%;
-  animation: gradientBorder 6s ease infinite;
-  padding: 1.5px;
-}
-
-.animated-border-inner {
-  @apply bg-white dark:bg-slate-900 rounded-[1.18rem] h-full w-full;
-}
-
-@keyframes gradientBorder {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+@layer utilities {
+  /* Subtle grid pattern for hero backgrounds */
+  .bg-pattern-grid {
+    background-size: 32px 32px;
+    background-image:
+      linear-gradient(to right, rgba(0, 0, 0, 0.02) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(0, 0, 0, 0.02) 1px, transparent 1px);
+  }
 }
