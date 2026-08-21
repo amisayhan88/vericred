@@ -115,14 +115,6 @@ VeriCred features a minimalist monochrome design system inspired by Cal.com and 
   <img src="docs/assets/mobile_ui.png" alt="VeriCred Mobile UI" width="375" />
 </p>
 
-### Interactive Modals & Workflow Views
-| Credential Issuance | ZK Proof Generator | Verification Modal |
-| :---: | :---: | :---: |
-| ![Issuance](image.png) | ![ZK Proof](image-1.png) | ![Verify](image-2.png) |
-
-### CI/CD Automation Pipeline
-![CI/CD Pipeline Run](image-3.png)
-
 ---
 
 ## 📜 Project Smart Contracts
