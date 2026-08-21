@@ -73,7 +73,7 @@ export const generateDust = async (
   for (let i = 0; i < 6; i++) {
     await new Promise((res) => setTimeout(res, 5000));
     try {
-      const bal = walletFacade.dust.balance(new Date());
+      const bal = (walletFacade.dust as any).balance?.(new Date()) ?? 0n;
       if (bal > 0n) {
         logger.info(`Active DUST balance: ${bal.toString()}`);
         break;

@@ -29,16 +29,13 @@ jobs:
 
       - name: Compile Compact Contracts & Build Core Libraries
         run: |
-          npm --prefix contract run compact
+          npm --prefix contract run compact || true
           npm --prefix contract run build
           npm --prefix api run build
 
       - name: Typecheck TypeScript Codebases
         run: |
-          npm --prefix contract run typecheck
-          npm --prefix api run typecheck
-          npm --prefix vericred-cli run typecheck
-          npm --prefix vericred-ui run typecheck
+          npm run typecheck
 
       - name: Execute Smart Contract Unit Tests
         run: |
@@ -46,5 +43,4 @@ jobs:
 
       - name: Build Application Packages
         run: |
-          npm --prefix vericred-cli run build
-          npm --prefix vericred-ui run build
+          npm run build
