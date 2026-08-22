@@ -1,18 +1,25 @@
 # VeriCred – Confidential Academic Credentials on Midnight Network (Level 1)
 
 [![CI/CD Pipeline](https://github.com/amisayhan88/DV-portal/actions/workflows/ci.yml/badge.svg)](https://github.com/amisayhan88/DV-portal/actions/workflows/ci.yml)
-[![Midnight Network](https://img.shields.io/badge/Network-Midnight_Preprod-6b21a8.svg)](https://preprod.midnightexplorer.com)
+[![Midnight Network](https://img.shields.io/badge/Network-Midnight_Preprod-6b21a8.svg)](https://preprod.midnightexplorer.com/contract/3121b7274109a3ca0de55796986e0cae838632d69aa8521f6b1d8fa46f685661)
+[![Contract Deployed](https://img.shields.io/badge/Contract-3121b727...685661-emerald.svg)](https://preprod.midnightexplorer.com/contract/3121b7274109a3ca0de55796986e0cae838632d69aa8521f6b1d8fa46f685661)
 [![Compact Language](https://img.shields.io/badge/Language-Compact_0.23-blue.svg)](https://midnight.network)
 [![Tests Passing](https://img.shields.io/badge/Tests-14%2F14_Passing-emerald.svg)](https://github.com/amisayhan88/DV-portal)
 
 ![VeriCred Banner](https://raw.githubusercontent.com/midnightntwrk/example-bboard/main/docs/assets/banner.png)
 
-## Level 1 — Compact Contract on Preprod
+---
 
-Level 1 delivered a working Compact contract, local unit tests, a Preprod deployment with documented privacy behavior, and a full-stack privacy DApp interface.
+## ⚡ Live DApp & Midnight Preprod Contract
 
-📄 **Product Proposal**: [PROPOSAL.md](PROPOSAL.md) | [proposal.ms](proposal.ms)  
-🎥 **1-Minute DApp Demo Video**: [https://youtu.be/AO1LrfsJX2c?si=hAST_DOITezVdSZ2](https://youtu.be/AO1LrfsJX2c?si=hAST_DOITezVdSZ2)
+| Resource | Link / Information | Description |
+| :--- | :--- | :--- |
+| 🌐 **Live Web Application** | [**https://dv-portal.vercel.app**](https://dv-portal.vercel.app) | Live production DApp interface hosted on Vercel |
+| 📜 **Deployed Smart Contract** | [`3121b7274109a3ca0de55796986e0cae838632d69aa8521f6b1d8fa46f685661`](https://preprod.midnightexplorer.com/contract/3121b7274109a3ca0de55796986e0cae838632d69aa8521f6b1d8fa46f685661) | VeriCred CAC Contract on Midnight Preprod |
+| 🔍 **Preprod Block Explorer** | [**View on Midnight Explorer ↗**](https://preprod.midnightexplorer.com/contract/3121b7274109a3ca0de55796986e0cae838632d69aa8521f6b1d8fa46f685661) | Real-time on-chain ledger state, transactions & circuits |
+| 👤 **Deployer Wallet** | [`mn_addr_preprod1xzej9p78pa65rywz4085z9ee75wanmq7gq5k88alrm3j6q8p3wzsr5gtj4`](https://preprod.midnightexplorer.com/contract/3121b7274109a3ca0de55796986e0cae838632d69aa8521f6b1d8fa46f685661) | Authorized deployer address on Midnight Preprod |
+| 🎥 **1-Minute Demo Video** | [**Watch DApp Demo on YouTube ↗**](https://youtu.be/AO1LrfsJX2c?si=hAST_DOITezVdSZ2) | 60-second walkthrough of issuance, ZK proving & verification |
+| 📄 **Product Proposal** | [PROPOSAL.md](PROPOSAL.md) | Product proposal & specification |
 
 ---
 
@@ -166,7 +173,7 @@ witness graduationYearSecret(): Uint<32>;
 | **Approved Idea from Idea List** | ✅ **PASSED** | Degree Verification Platform (VeriCred) |
 | **Minimum 10 Meaningful Commits** | ✅ **PASSED** | 10+ structured git commits documented below |
 | **Public GitHub Repository & README** | ✅ **PASSED** | https://github.com/amisayhan88/DV-portal.git |
-| **Live Demo / Local Launch Link** | ✅ **PASSED** | Frontend dev server (`npm run dev`) & Docker Compose |
+| **Live Demo / Local Launch Link** | ✅ **PASSED** | [https://dv-portal.vercel.app](https://dv-portal.vercel.app) & Local Dev Server |
 | **Demo Video (1 Minute)** | ✅ **PASSED** | 🎥 [Watch VeriCred 1-Minute DApp Demo Walkthrough](https://youtu.be/AO1LrfsJX2c?si=hAST_DOITezVdSZ2) |
 | **README Privacy Model Section** | ✅ **PASSED** | Detailed "What an Observer CAN and CANNOT Learn" breakdown below |
 
@@ -194,11 +201,11 @@ The `cac.compact` smart contract separates data into on-chain public ledger stat
 
 | Network | Contract Address / Status | Verification Explorer Link |
 | --- | --- | --- |
-| **Preprod** | `3121b7274109a3ca0de55796986e0cae838632d69aa8521f6b1d8fa46f685661` | [🌐 Midnight Explorer](https://preprod.midnightexplorer.com/contract/3121b7274109a3ca0de55796986e0cae838632d69aa8521f6b1d8fa46f685661) \| [🌐 Subscan](https://midnight-preprod.subscan.io) \| [🌐 1am Explorer](https://explorer.1am.xyz) |
+| **Preprod** | [`3121b7274109a3ca0de55796986e0cae838632d69aa8521f6b1d8fa46f685661`](https://preprod.midnightexplorer.com/contract/3121b7274109a3ca0de55796986e0cae838632d69aa8521f6b1d8fa46f685661) | [🌐 View on Midnight Explorer (Redirects to Contract Page) ↗](https://preprod.midnightexplorer.com/contract/3121b7274109a3ca0de55796986e0cae838632d69aa8521f6b1d8fa46f685661) |
 | **Undeployed** | `3523aa3006329b8e763ba2cc655fb9a0e25833d2f11072c1d50146a830074d0b` | Development Ledger ID |
 
 ### Deployer Wallet Address (Preprod)
-`mn_addr_preprod1xzej9p78pa65rywz4085z9ee75wanmq7gq5k88alrm3j6q8p3wzsr5gtj4`
+[`mn_addr_preprod1xzej9p78pa65rywz4085z9ee75wanmq7gq5k88alrm3j6q8p3wzsr5gtj4`](https://preprod.midnightexplorer.com/contract/3121b7274109a3ca0de55796986e0cae838632d69aa8521f6b1d8fa46f685661)
 
 ---
 
