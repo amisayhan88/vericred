@@ -1,10 +1,10 @@
 # VeriCred – Confidential Academic Credentials on Midnight Network (Level 1)
 
-[![CI/CD Pipeline](https://github.com/amisayhan88/DV-portal/actions/workflows/ci.yml/badge.svg)](https://github.com/amisayhan88/DV-portal/actions/workflows/ci.yml)
+[![CI/CD Pipeline](https://github.com/amisayhan88/vericred/actions/workflows/ci.yml/badge.svg)](https://github.com/amisayhan88/vericred/actions/workflows/ci.yml)
 [![Midnight Network](https://img.shields.io/badge/Network-Midnight_Preprod-6b21a8.svg)](https://preprod.midnightexplorer.com/contract/3121b7274109a3ca0de55796986e0cae838632d69aa8521f6b1d8fa46f685661)
 [![Contract Deployed](https://img.shields.io/badge/Contract-3121b727...685661-emerald.svg)](https://preprod.midnightexplorer.com/contract/3121b7274109a3ca0de55796986e0cae838632d69aa8521f6b1d8fa46f685661)
 [![Compact Language](https://img.shields.io/badge/Language-Compact_0.23-blue.svg)](https://midnight.network)
-[![Tests Passing](https://img.shields.io/badge/Tests-14%2F14_Passing-emerald.svg)](https://github.com/amisayhan88/DV-portal)
+[![Tests Passing](https://img.shields.io/badge/Tests-14%2F14_Passing-emerald.svg)](https://github.com/amisayhan88/vericred)
 
 ![VeriCred Banner](https://raw.githubusercontent.com/midnightntwrk/example-bboard/main/docs/assets/banner.png)
 
@@ -172,7 +172,7 @@ witness graduationYearSecret(): Uint<32>;
 | **CI/CD Pipeline Running** | ✅ **PASSED** | `.github/workflows/ci.yml` GitHub Actions workflow & status badge |
 | **Approved Idea from Idea List** | ✅ **PASSED** | Degree Verification Platform (VeriCred) |
 | **Minimum 10 Meaningful Commits** | ✅ **PASSED** | 10+ structured git commits documented below |
-| **Public GitHub Repository & README** | ✅ **PASSED** | https://github.com/amisayhan88/DV-portal.git |
+| **Public GitHub Repository & README** | ✅ **PASSED** | https://github.com/amisayhan88/vericred.git |
 | **Live Demo / Local Launch Link** | ✅ **PASSED** | [https://dv-portal.vercel.app](https://dv-portal.vercel.app) & Local Dev Server |
 | **Demo Video (1 Minute)** | ✅ **PASSED** | 🎥 [Watch VeriCred 1-Minute DApp Demo Walkthrough](https://youtu.be/AO1LrfsJX2c?si=hAST_DOITezVdSZ2) |
 | **README Privacy Model Section** | ✅ **PASSED** | Detailed "What an Observer CAN and CANNOT Learn" breakdown below |
@@ -229,8 +229,8 @@ The `cac.compact` smart contract separates data into on-chain public ledger stat
 
 ```bash
 # 1. Clone Repository
-git clone https://github.com/amisayhan88/DV-portal.git
-cd DV-portal
+git clone https://github.com/amisayhan88/vericred.git
+cd vericred
 
 # 2. Install Workspace Dependencies
 npm install
