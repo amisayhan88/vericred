@@ -6,8 +6,6 @@
 [![Compact Language](https://img.shields.io/badge/Language-Compact_0.23-blue.svg)](https://midnight.network)
 [![Tests Passing](https://img.shields.io/badge/Tests-14%2F14_Passing-emerald.svg)](https://github.com/amisayhan88/vericred)
 
-![VeriCred Banner](https://raw.githubusercontent.com/midnightntwrk/example-bboard/main/docs/assets/banner.png)
-
 ---
 
 ## ⚡ Live DApp & Midnight Preprod Contract
