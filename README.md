@@ -1,8 +1,8 @@
 # VeriCred – Confidential Academic Credentials on Midnight Network (Level 1)
 
 [![CI/CD Pipeline](https://github.com/amisayhan88/vericred/actions/workflows/ci.yml/badge.svg)](https://github.com/amisayhan88/vericred/actions/workflows/ci.yml)
-[![Midnight Network](https://img.shields.io/badge/Network-Midnight_Preprod-6b21a8.svg)](https://preprod.midnightexplorer.com/contract/3121b7274109a3ca0de55796986e0cae838632d69aa8521f6b1d8fa46f685661)
-[![Contract Deployed](https://img.shields.io/badge/Contract-3121b727...685661-emerald.svg)](https://preprod.midnightexplorer.com/contract/3121b7274109a3ca0de55796986e0cae838632d69aa8521f6b1d8fa46f685661)
+[![Midnight Network](https://img.shields.io/badge/Network-Midnight_Preprod-6b21a8.svg)](https://preprod.midnightexplorer.com/contracts/0x3121b7274109a3ca0de55796986e0cae838632d69aa8521f6b1d8fa46f685661)
+[![Contract Deployed](https://img.shields.io/badge/Contract-0x3121b727...685661-emerald.svg)](https://preprod.midnightexplorer.com/contracts/0x3121b7274109a3ca0de55796986e0cae838632d69aa8521f6b1d8fa46f685661)
 [![Compact Language](https://img.shields.io/badge/Language-Compact_0.23-blue.svg)](https://midnight.network)
 [![Tests Passing](https://img.shields.io/badge/Tests-14%2F14_Passing-emerald.svg)](https://github.com/amisayhan88/vericred)
 
@@ -15,9 +15,10 @@
 | Resource | Link / Information | Description |
 | :--- | :--- | :--- |
 | 🌐 **Live Web Application** | [**https://dv-portal.vercel.app**](https://dv-portal.vercel.app) | Live production DApp interface hosted on Vercel |
-| 📜 **Deployed Smart Contract** | [`3121b7274109a3ca0de55796986e0cae838632d69aa8521f6b1d8fa46f685661`](https://preprod.midnightexplorer.com/contract/3121b7274109a3ca0de55796986e0cae838632d69aa8521f6b1d8fa46f685661) | VeriCred CAC Contract on Midnight Preprod |
-| 🔍 **Preprod Block Explorer** | [**View on Midnight Explorer ↗**](https://preprod.midnightexplorer.com/contract/3121b7274109a3ca0de55796986e0cae838632d69aa8521f6b1d8fa46f685661) | Real-time on-chain ledger state, transactions & circuits |
-| 👤 **Deployer Wallet** | [`mn_addr_preprod1xzej9p78pa65rywz4085z9ee75wanmq7gq5k88alrm3j6q8p3wzsr5gtj4`](https://preprod.midnightexplorer.com/contract/3121b7274109a3ca0de55796986e0cae838632d69aa8521f6b1d8fa46f685661) | Authorized deployer address on Midnight Preprod |
+| 📜 **Deployed Smart Contract** | [`0x3121b7274109a3ca0de55796986e0cae838632d69aa8521f6b1d8fa46f685661`](https://preprod.midnightexplorer.com/contracts/0x3121b7274109a3ca0de55796986e0cae838632d69aa8521f6b1d8fa46f685661) | VeriCred CAC Contract on Midnight Preprod |
+| 🔍 **Preprod Block Explorer** | [**View Contract on Midnight Explorer ↗**](https://preprod.midnightexplorer.com/contracts/0x3121b7274109a3ca0de55796986e0cae838632d69aa8521f6b1d8fa46f685661) | Real-time on-chain ledger state, bytecode & ZSwap roots |
+| 🧾 **Deploy Transaction** | [`0xd76b321e7f5816e0de32ad7ce0301e7aaab668135fba95bf3ad78493c26eea79`](https://preprod.midnightexplorer.com/transactions/0xd76b321e7f5816e0de32ad7ce0301e7aaab668135fba95bf3ad78493c26eea79) | Block `#2199699` • Status `SUCCESS` |
+| 👤 **Deployer Wallet** | `mn_addr_preprod1xzej9p78pa65rywz4085z9ee75wanmq7gq5k88alrm3j6q8p3wzsr5gtj4` | Authorized deployer address on Midnight Preprod |
 | 🎥 **1-Minute Demo Video** | [**Watch DApp Demo on YouTube ↗**](https://youtu.be/AO1LrfsJX2c?si=hAST_DOITezVdSZ2) | 60-second walkthrough of issuance, ZK proving & verification |
 | 📄 **Product Proposal** | [PROPOSAL.md](PROPOSAL.md) | Product proposal & specification |
 
@@ -201,11 +202,12 @@ The `cac.compact` smart contract separates data into on-chain public ledger stat
 
 | Network | Contract Address / Status | Verification Explorer Link |
 | --- | --- | --- |
-| **Preprod** | [`3121b7274109a3ca0de55796986e0cae838632d69aa8521f6b1d8fa46f685661`](https://preprod.midnightexplorer.com/contract/3121b7274109a3ca0de55796986e0cae838632d69aa8521f6b1d8fa46f685661) | [🌐 View on Midnight Explorer (Redirects to Contract Page) ↗](https://preprod.midnightexplorer.com/contract/3121b7274109a3ca0de55796986e0cae838632d69aa8521f6b1d8fa46f685661) |
-| **Undeployed** | `3523aa3006329b8e763ba2cc655fb9a0e25833d2f11072c1d50146a830074d0b` | Development Ledger ID |
+| **Preprod Contract** | [`0x3121b7274109a3ca0de55796986e0cae838632d69aa8521f6b1d8fa46f685661`](https://preprod.midnightexplorer.com/contracts/0x3121b7274109a3ca0de55796986e0cae838632d69aa8521f6b1d8fa46f685661) | [🌐 View Contract on Midnight Explorer ↗](https://preprod.midnightexplorer.com/contracts/0x3121b7274109a3ca0de55796986e0cae838632d69aa8521f6b1d8fa46f685661) |
+| **Deploy Transaction** | [`0xd76b321e7f5816e0de32ad7ce0301e7aaab668135fba95bf3ad78493c26eea79`](https://preprod.midnightexplorer.com/transactions/0xd76b321e7f5816e0de32ad7ce0301e7aaab668135fba95bf3ad78493c26eea79) | [🌐 View Deploy Tx (Block #2199699) ↗](https://preprod.midnightexplorer.com/transactions/0xd76b321e7f5816e0de32ad7ce0301e7aaab668135fba95bf3ad78493c26eea79) |
+| **Undeployed Dev ID** | `3523aa3006329b8e763ba2cc655fb9a0e25833d2f11072c1d50146a830074d0b` | Local Standalone Testkit Ledger ID |
 
 ### Deployer Wallet Address (Preprod)
-[`mn_addr_preprod1xzej9p78pa65rywz4085z9ee75wanmq7gq5k88alrm3j6q8p3wzsr5gtj4`](https://preprod.midnightexplorer.com/contract/3121b7274109a3ca0de55796986e0cae838632d69aa8521f6b1d8fa46f685661)
+`mn_addr_preprod1xzej9p78pa65rywz4085z9ee75wanmq7gq5k88alrm3j6q8p3wzsr5gtj4`
 
 ---
 
