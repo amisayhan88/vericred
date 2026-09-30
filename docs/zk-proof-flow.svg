@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 1020" width="2360" height="2040" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">
+<rect width="1180" height="1020" fill="#FAFAF8"/>
+<defs>
+<marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6B6B67"/></marker>
+<marker id="arwT" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#4F8582"/></marker>
+<marker id="arwA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2F6B8A"/></marker>
+</defs>
+<text x="590.0" y="46" font-size="21" fill="#111111" text-anchor="middle" font-weight="600" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">VeriCred — ZK Proof Flow (what stays private, what is proven)</text>
+<rect x="390" y="110" width="400" height="110" rx="12" fill="#FFFFFF" stroke="#D8D8D0" stroke-width="1.2" stroke-dasharray="6 5"/>
+<rect x="390" y="110" width="400" height="5" rx="2.5" fill="#4F8582" opacity="0.9"/>
+<text x="590.0" y="144" font-size="14.5" fill="#111111" text-anchor="middle" font-weight="600" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">Private Credential Data</text>
+<text x="590.0" y="166" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">GPA 3.71 · transcript · identity · DOB · address</text>
+<text x="590.0" y="183" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">holder device · encrypted at rest</text>
+<rect x="688" y="122" width="90" height="20" rx="10" fill="#4F8582" opacity="0.12"/>
+<text x="733.0" y="136" font-size="9.5" fill="#4F8582" text-anchor="middle" font-weight="700" font-family="'JetBrains Mono', Menlo, monospace">PRIVATE</text>
+<line x1="590" y1="220" x2="590" y2="268" stroke="#6B6B67" stroke-width="1.6" marker-end="url(#arw)"/>
+<text x="600.0" y="244.0" font-size="10.5" fill="#6B6B67" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">witness extraction</text>
+<rect x="390" y="272" width="400" height="110" rx="12" fill="#FFFFFF" stroke="#D8D8D0" stroke-width="1.2" stroke-dasharray="6 5"/>
+<rect x="390" y="272" width="400" height="5" rx="2.5" fill="#4F8582" opacity="0.9"/>
+<text x="590.0" y="306" font-size="14.5" fill="#111111" text-anchor="middle" font-weight="600" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">Witness (CacPrivateState)</text>
+<text x="590.0" y="328" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">studentGpaScaled: 371 (Uint&lt;16&gt;)</text>
+<text x="590.0" y="345" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">degreeIdHash: Bytes&lt;32&gt; · localSecretKey</text>
+<rect x="688" y="284" width="90" height="20" rx="10" fill="#4F8582" opacity="0.12"/>
+<text x="733.0" y="298" font-size="9.5" fill="#4F8582" text-anchor="middle" font-weight="700" font-family="'JetBrains Mono', Menlo, monospace">PRIVATE</text>
+<line x1="590" y1="382" x2="590" y2="430" stroke="#6B6B67" stroke-width="1.6" marker-end="url(#arw)"/>
+<text x="600.0" y="406.0" font-size="10.5" fill="#6B6B67" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">circuit evaluation (local, proof server)</text>
+<rect x="340" y="434" width="500" height="122" rx="12" fill="#FFFFFF" stroke="#D8D8D0" stroke-width="1.2"/>
+<rect x="340" y="434" width="500" height="5" rx="2.5" fill="#173B57" opacity="0.9"/>
+<text x="590.0" y="468" font-size="14.5" fill="#111111" text-anchor="middle" font-weight="600" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">Compact Circuit</text>
+<text x="590.0" y="490" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">proveGpaThreshold(credHash, minGpaScaled)</text>
+<text x="590.0" y="507" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">assert status == VALID &amp;&amp; gpa &gt;= threshold</text>
+<text x="590.0" y="524" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">public output: boolean only</text>
+<rect x="788" y="446" width="40" height="20" rx="10" fill="#173B57" opacity="0.12"/>
+<text x="808.0" y="460" font-size="9.5" fill="#173B57" text-anchor="middle" font-weight="700" font-family="'JetBrains Mono', Menlo, monospace">ZK</text>
+<line x1="590" y1="556" x2="590" y2="604" stroke="#6B6B67" stroke-width="1.6" marker-end="url(#arw)"/>
+<text x="600.0" y="580.0" font-size="10.5" fill="#6B6B67" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">succinct proof + verificationId</text>
+<rect x="390" y="608" width="400" height="96" rx="12" fill="#FFFFFF" stroke="#D8D8D0" stroke-width="1.2"/>
+<rect x="390" y="608" width="400" height="5" rx="2.5" fill="#2F6B8A" opacity="0.9"/>
+<text x="590.0" y="642" font-size="14.5" fill="#111111" text-anchor="middle" font-weight="600" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">ZK Proof</text>
+<text x="590.0" y="664" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">proofHash · claimLabel “GPA ≥ 3.50”</text>
+<text x="590.0" y="681" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">QR · shareable link · expiry</text>
+<rect x="678" y="620" width="100" height="20" rx="10" fill="#2F6B8A" opacity="0.12"/>
+<text x="728.0" y="634" font-size="9.5" fill="#2F6B8A" text-anchor="middle" font-weight="700" font-family="'JetBrains Mono', Menlo, monospace">ARTIFACT</text>
+<line x1="590" y1="704" x2="590" y2="752" stroke="#6B6B67" stroke-width="1.6" marker-end="url(#arw)"/>
+<rect x="440" y="756" width="300" height="84" rx="12" fill="#FFFFFF" stroke="#D8D8D0" stroke-width="1.2"/>
+<rect x="440" y="756" width="300" height="5" rx="2.5" fill="#C9B99A" opacity="0.9"/>
+<text x="590.0" y="790" font-size="14.5" fill="#111111" text-anchor="middle" font-weight="600" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">Verifier</text>
+<text x="590.0" y="812" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">employer · admissions · board</text>
+<line x1="590" y1="840" x2="590" y2="888" stroke="#6B6B67" stroke-width="1.6" marker-end="url(#arw)"/>
+<rect x="390" y="892" width="400" height="84" rx="12" fill="#FFFFFF" stroke="#D8D8D0" stroke-width="1.2"/>
+<rect x="390" y="892" width="400" height="5" rx="2.5" fill="#3E7C5B" opacity="0.9"/>
+<text x="590.0" y="926" font-size="14.5" fill="#111111" text-anchor="middle" font-weight="600" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">Verified Claim ✓</text>
+<text x="590.0" y="948" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">boolean attestation + public labels only</text>
+<rect x="698" y="904" width="80" height="20" rx="10" fill="#3E7C5B" opacity="0.12"/>
+<text x="738.0" y="918" font-size="9.5" fill="#3E7C5B" text-anchor="middle" font-weight="700" font-family="'JetBrains Mono', Menlo, monospace">RESULT</text>
+<rect x="60" y="434" width="240" height="210" rx="12" fill="#FFFFFF" stroke="#D8D8D0" stroke-width="1.2"/>
+<rect x="60" y="434" width="240" height="5" rx="2.5" fill="#2F6B8A" opacity="0.9"/>
+<text x="180.0" y="468" font-size="14.5" fill="#111111" text-anchor="middle" font-weight="600" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">Exposed publicly</text>
+<text x="180.0" y="490" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">credentialHash</text>
+<text x="180.0" y="507" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">status transitions</text>
+<text x="180.0" y="524" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">institutionOwner</text>
+<text x="180.0" y="541" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">proof validity</text>
+<text x="180.0" y="558" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">claim boolean</text>
+<rect x="880" y="434" width="240" height="210" rx="12" fill="#FFFFFF" stroke="#D8D8D0" stroke-width="1.2" stroke-dasharray="6 5"/>
+<rect x="880" y="434" width="240" height="5" rx="2.5" fill="#4F8582" opacity="0.9"/>
+<text x="1000.0" y="468" font-size="14.5" fill="#111111" text-anchor="middle" font-weight="600" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">Never exposed</text>
+<text x="1000.0" y="490" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">exact GPA (3.71)</text>
+<text x="1000.0" y="507" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">transcript rows</text>
+<text x="1000.0" y="524" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">identity · DOB</text>
+<text x="1000.0" y="541" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">address · student ID</text>
+<text x="1000.0" y="558" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">course grades</text>
+</svg>

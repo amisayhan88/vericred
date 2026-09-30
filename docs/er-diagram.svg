@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1420 980" width="2840" height="1960" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">
+<rect width="1420" height="980" fill="#FAFAF8"/>
+<defs>
+<marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6B6B67"/></marker>
+<marker id="arwT" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#4F8582"/></marker>
+<marker id="arwA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2F6B8A"/></marker>
+</defs>
+<text x="710.0" y="46" font-size="21" fill="#111111" text-anchor="middle" font-weight="600" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">VeriCred — Entity Model (as implemented)</text>
+<text x="60" y="100" font-size="10.5" fill="#98978F" text-anchor="start" font-weight="700" font-family="'JetBrains Mono', Menlo, monospace" letter-spacing="0.14em">ENTITIES (STORE/USEWALLETSTORE.TS)</text>
+<rect x="70" y="140" width="330" height="98" rx="10" fill="#FFFFFF" stroke="#D8D8D0" stroke-width="1.2"/>
+<path d="M 70 174 L 400 174" stroke="#D8D8D0" stroke-width="1"/>
+<rect x="70" y="140" width="330" height="34" rx="10" fill="#173B57" opacity="0.10"/>
+<text x="84" y="162" font-size="13" fill="#173B57" text-anchor="start" font-weight="700" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">Institution (issuer)</text>
+<text x="84" y="194" font-size="10.5" fill="#111111" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">ownerPublicKey</text>
+<text x="386" y="194" font-size="10" fill="#98978F" text-anchor="end" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">Bytes&lt;32&gt;</text>
+<text x="84" y="212" font-size="10.5" fill="#111111" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">name</text>
+<text x="386" y="212" font-size="10" fill="#98978F" text-anchor="end" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">string</text>
+<text x="84" y="230" font-size="10.5" fill="#111111" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">— ledger: institutionOwner</text>
+<text x="386" y="230" font-size="10" fill="#98978F" text-anchor="end" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">on-chain</text>
+<rect x="545" y="140" width="380" height="242" rx="10" fill="#FFFFFF" stroke="#D8D8D0" stroke-width="1.2"/>
+<path d="M 545 174 L 925 174" stroke="#D8D8D0" stroke-width="1"/>
+<rect x="545" y="140" width="380" height="34" rx="10" fill="#2F6B8A" opacity="0.10"/>
+<text x="559" y="162" font-size="13" fill="#2F6B8A" text-anchor="start" font-weight="700" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">Credential</text>
+<text x="559" y="194" font-size="10.5" fill="#111111" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">id / displayId</text>
+<text x="911" y="194" font-size="10" fill="#98978F" text-anchor="end" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">VC-XXXX-XXXX</text>
+<text x="559" y="212" font-size="10.5" fill="#111111" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">credentialHash</text>
+<text x="911" y="212" font-size="10" fill="#98978F" text-anchor="end" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">0x…32B (public)</text>
+<text x="559" y="230" font-size="10.5" fill="#111111" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">type</text>
+<text x="911" y="230" font-size="10" fill="#98978F" text-anchor="end" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">DEGREE|GPA|…</text>
+<text x="559" y="248" font-size="10.5" fill="#111111" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">title · program</text>
+<text x="911" y="248" font-size="10" fill="#98978F" text-anchor="end" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">string</text>
+<text x="559" y="266" font-size="10.5" fill="#111111" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">status</text>
+<text x="911" y="266" font-size="10" fill="#98978F" text-anchor="end" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">ACTIVE|PENDING|</text>
+<text x="559" y="284" font-size="10.5" fill="#111111" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace"></text>
+<text x="911" y="284" font-size="10" fill="#98978F" text-anchor="end" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">SUSPENDED|EXPIRED|REVOKED</text>
+<text x="559" y="302" font-size="10.5" fill="#111111" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">issuedAt · expiresAt</text>
+<text x="911" y="302" font-size="10" fill="#98978F" text-anchor="end" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">ISO</text>
+<text x="559" y="320" font-size="10.5" fill="#111111" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">revocationReason</text>
+<text x="911" y="320" font-size="10" fill="#98978F" text-anchor="end" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">string?</text>
+<text x="559" y="338" font-size="10.5" fill="#111111" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">gpa (PRIVATE witness)</text>
+<text x="911" y="338" font-size="10" fill="#98978F" text-anchor="end" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">never rendered</text>
+<text x="559" y="356" font-size="10.5" fill="#111111" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">proofsGenerated · verifications</text>
+<text x="911" y="356" font-size="10" fill="#98978F" text-anchor="end" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">counters</text>
+<text x="559" y="374" font-size="10.5" fill="#111111" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">timeline[]</text>
+<text x="911" y="374" font-size="10" fill="#98978F" text-anchor="end" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">CredentialEvent</text>
+<rect x="1070" y="140" width="300" height="98" rx="10" fill="#FFFFFF" stroke="#D8D8D0" stroke-width="1.2"/>
+<path d="M 1070 174 L 1370 174" stroke="#D8D8D0" stroke-width="1"/>
+<rect x="1070" y="140" width="300" height="34" rx="10" fill="#A8C1B5" opacity="0.10"/>
+<text x="1084" y="162" font-size="13" fill="#A8C1B5" text-anchor="start" font-weight="700" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">Student (holder)</text>
+<text x="1084" y="194" font-size="10.5" fill="#111111" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">studentName</text>
+<text x="1356" y="194" font-size="10" fill="#98978F" text-anchor="end" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">string</text>
+<text x="1084" y="212" font-size="10.5" fill="#111111" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">studentDid</text>
+<text x="1356" y="212" font-size="10" fill="#98978F" text-anchor="end" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">did:midnight:vc:…</text>
+<text x="1084" y="230" font-size="10.5" fill="#111111" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">walletAddress</text>
+<text x="1356" y="230" font-size="10" fill="#98978F" text-anchor="end" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">mn_addr_preview…</text>
+<rect x="545" y="560" width="380" height="206" rx="10" fill="#FFFFFF" stroke="#D8D8D0" stroke-width="1.2"/>
+<path d="M 545 594 L 925 594" stroke="#D8D8D0" stroke-width="1"/>
+<rect x="545" y="560" width="380" height="34" rx="10" fill="#4F8582" opacity="0.10"/>
+<text x="559" y="582" font-size="13" fill="#4F8582" text-anchor="start" font-weight="700" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">ProofRecord</text>
+<text x="559" y="614" font-size="10.5" fill="#111111" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">verificationId</text>
+<text x="911" y="614" font-size="10" fill="#98978F" text-anchor="end" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">VP-XXXX-XXXX</text>
+<text x="559" y="632" font-size="10.5" fill="#111111" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">credentialId</text>
+<text x="911" y="632" font-size="10" fill="#98978F" text-anchor="end" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">→ Credential</text>
+<text x="559" y="650" font-size="10.5" fill="#111111" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">claimType · claimLabel</text>
+<text x="911" y="650" font-size="10" fill="#98978F" text-anchor="end" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">enum · string</text>
+<text x="559" y="668" font-size="10.5" fill="#111111" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">threshold · customClaim</text>
+<text x="911" y="668" font-size="10" fill="#98978F" text-anchor="end" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">number? · string?</text>
+<text x="559" y="686" font-size="10.5" fill="#111111" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">circuit</text>
+<text x="911" y="686" font-size="10" fill="#98978F" text-anchor="end" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">proveGpaThreshold|…</text>
+<text x="559" y="704" font-size="10.5" fill="#111111" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">proofHash · txHash</text>
+<text x="911" y="704" font-size="10" fill="#98978F" text-anchor="end" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">0x…</text>
+<text x="559" y="722" font-size="10.5" fill="#111111" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">createdAt · expiresAt</text>
+<text x="911" y="722" font-size="10" fill="#98978F" text-anchor="end" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">ISO</text>
+<text x="559" y="740" font-size="10.5" fill="#111111" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">disclosed[] · concealed[]</text>
+<text x="911" y="740" font-size="10" fill="#98978F" text-anchor="end" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">string[]</text>
+<text x="559" y="758" font-size="10.5" fill="#111111" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">status</text>
+<text x="911" y="758" font-size="10" fill="#98978F" text-anchor="end" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">GENERATED|VERIFIED|EXPIRED</text>
+<rect x="1070" y="560" width="300" height="152" rx="10" fill="#FFFFFF" stroke="#D8D8D0" stroke-width="1.2"/>
+<path d="M 1070 594 L 1370 594" stroke="#D8D8D0" stroke-width="1"/>
+<rect x="1070" y="560" width="300" height="34" rx="10" fill="#C9B99A" opacity="0.10"/>
+<text x="1084" y="582" font-size="13" fill="#C9B99A" text-anchor="start" font-weight="700" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">VerificationLog</text>
+<text x="1084" y="614" font-size="10.5" fill="#111111" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">verifier</text>
+<text x="1356" y="614" font-size="10" fill="#98978F" text-anchor="end" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">string</text>
+<text x="1084" y="632" font-size="10.5" fill="#111111" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">verifierType</text>
+<text x="1356" y="632" font-size="10" fill="#98978F" text-anchor="end" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">EMPLOYER|…</text>
+<text x="1084" y="650" font-size="10.5" fill="#111111" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">target</text>
+<text x="1356" y="650" font-size="10" fill="#98978F" text-anchor="end" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">VP-/VC- id</text>
+<text x="1084" y="668" font-size="10.5" fill="#111111" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">claim</text>
+<text x="1356" y="668" font-size="10" fill="#98978F" text-anchor="end" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">string</text>
+<text x="1084" y="686" font-size="10.5" fill="#111111" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">outcome</text>
+<text x="1356" y="686" font-size="10" fill="#98978F" text-anchor="end" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">PASSED|FAILED</text>
+<text x="1084" y="704" font-size="10.5" fill="#111111" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">at</text>
+<text x="1356" y="704" font-size="10" fill="#98978F" text-anchor="end" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">ISO</text>
+<rect x="70" y="560" width="330" height="116" rx="10" fill="#FFFFFF" stroke="#D8D8D0" stroke-width="1.2"/>
+<path d="M 70 594 L 400 594" stroke="#D8D8D0" stroke-width="1"/>
+<rect x="70" y="560" width="330" height="34" rx="10" fill="#A8792C" opacity="0.10"/>
+<text x="84" y="582" font-size="13" fill="#A8792C" text-anchor="start" font-weight="700" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">Transaction (ledger event)</text>
+<text x="84" y="614" font-size="10.5" fill="#111111" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">type</text>
+<text x="386" y="614" font-size="10" fill="#98978F" text-anchor="end" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">ISSUE|PROOF|VERIFY|…</text>
+<text x="84" y="632" font-size="10.5" fill="#111111" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">hash</text>
+<text x="386" y="632" font-size="10" fill="#98978F" text-anchor="end" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">0x… (truncated)</text>
+<text x="84" y="650" font-size="10.5" fill="#111111" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">status</text>
+<text x="386" y="650" font-size="10" fill="#98978F" text-anchor="end" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">CONFIRMED|PENDING|…</text>
+<text x="84" y="668" font-size="10.5" fill="#111111" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">details · timestamp</text>
+<text x="386" y="668" font-size="10" fill="#98978F" text-anchor="end" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">string · ISO</text>
+<line x1="400" y1="210" x2="545" y2="210" stroke="#6B6B67" stroke-width="1.6" marker-end="url(#arw)"/>
+<text x="482.5" y="210.0" font-size="10.5" fill="#6B6B67" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">1 issues *</text>
+<line x1="1070" y1="210" x2="925" y2="210" stroke="#6B6B67" stroke-width="1.6" marker-end="url(#arw)"/>
+<text x="1007.5" y="210.0" font-size="10.5" fill="#6B6B67" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">* holds 1</text>
+<line x1="735" y1="424" x2="735" y2="560" stroke="#6B6B67" stroke-width="1.6" marker-end="url(#arw)"/>
+<text x="745.0" y="492.0" font-size="10.5" fill="#6B6B67" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">1 generates *</text>
+<line x1="925" y1="640" x2="1070" y2="640" stroke="#6B6B67" stroke-width="1.6" marker-end="url(#arw)"/>
+<text x="1007.5" y="640.0" font-size="10.5" fill="#6B6B67" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">1 checked by *</text>
+<line x1="545" y1="700" x2="400" y2="700" stroke="#6B6B67" stroke-width="1.6" stroke-dasharray="5 5" marker-end="url(#arw)"/>
+<text x="482.5" y="700.0" font-size="10.5" fill="#6B6B67" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">mirrored by</text>
+<text x="70" y="920" font-size="11.5" fill="#6B6B67" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">On-chain (Midnight Preview): credentialStatus Map&lt;Bytes&lt;32&gt;, CredentialStatus&gt; · institutionOwner · totalCredentialsIssued counter.</text>
+<text x="70" y="942" font-size="11.5" fill="#6B6B67" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">Off-chain (browser): entity tables above persisted via zustand+localStorage in demo mode; live mode reads the same shapes from the indexer.</text>
+</svg>

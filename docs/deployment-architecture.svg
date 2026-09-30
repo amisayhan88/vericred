@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1360 980" width="2720" height="1960" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">
+<rect width="1360" height="980" fill="#FAFAF8"/>
+<defs>
+<marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6B6B67"/></marker>
+<marker id="arwT" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#4F8582"/></marker>
+<marker id="arwA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2F6B8A"/></marker>
+</defs>
+<text x="680.0" y="46" font-size="21" fill="#111111" text-anchor="middle" font-weight="600" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">VeriCred — Deployment Architecture (actual repository)</text>
+<rect x="480" y="100" width="400" height="96" rx="12" fill="#FFFFFF" stroke="#D8D8D0" stroke-width="1.2"/>
+<rect x="480" y="100" width="400" height="5" rx="2.5" fill="#A8C1B5" opacity="0.9"/>
+<text x="680.0" y="134" font-size="14.5" fill="#111111" text-anchor="middle" font-weight="600" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">Browser</text>
+<text x="680.0" y="156" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">student · registrar · verifier sessions</text>
+<text x="680.0" y="173" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">Lace / 1AM wallet via dApp connector v4</text>
+<rect x="788" y="112" width="80" height="20" rx="10" fill="#A8C1B5" opacity="0.12"/>
+<text x="828.0" y="126" font-size="9.5" fill="#A8C1B5" text-anchor="middle" font-weight="700" font-family="'JetBrains Mono', Menlo, monospace">CLIENT</text>
+<line x1="680" y1="196" x2="680" y2="244" stroke="#6B6B67" stroke-width="1.6" marker-end="url(#arw)"/>
+<rect x="430" y="248" width="500" height="110" rx="12" fill="#FFFFFF" stroke="#D8D8D0" stroke-width="1.2"/>
+<rect x="430" y="248" width="500" height="5" rx="2.5" fill="#2F6B8A" opacity="0.9"/>
+<text x="680.0" y="282" font-size="14.5" fill="#111111" text-anchor="middle" font-weight="600" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">vericred-ui — Vite + React 19 SPA</text>
+<text x="680.0" y="304" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">Tailwind · Framer Motion · R3F/Drei (lazy) · zustand</text>
+<text x="680.0" y="321" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">static hosting / vercel.json rewrites · build → dist/</text>
+<rect x="818" y="260" width="100" height="20" rx="10" fill="#2F6B8A" opacity="0.12"/>
+<text x="868.0" y="274" font-size="9.5" fill="#2F6B8A" text-anchor="middle" font-weight="700" font-family="'JetBrains Mono', Menlo, monospace">FRONTEND</text>
+<line x1="680" y1="358" x2="680" y2="406" stroke="#6B6B67" stroke-width="1.6" marker-end="url(#arw)"/>
+<text x="690.0" y="382.0" font-size="10.5" fill="#6B6B67" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">services/cac-service.ts · CredentialLedger</text>
+<rect x="160" y="410" width="460" height="122" rx="12" fill="#FFFFFF" stroke="#D8D8D0" stroke-width="1.2" stroke-dasharray="6 5"/>
+<rect x="160" y="410" width="460" height="5" rx="2.5" fill="#6B6B67" opacity="0.9"/>
+<text x="390.0" y="444" font-size="14.5" fill="#111111" text-anchor="middle" font-weight="600" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">DemoLedger (default)</text>
+<text x="390.0" y="466" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">mirrors cac.compact circuit ABI 1:1</text>
+<text x="390.0" y="483" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">offline-safe demo state · localStorage</text>
+<text x="390.0" y="500" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">no private keys · no network writes</text>
+<rect x="548" y="422" width="60" height="20" rx="10" fill="#6B6B67" opacity="0.12"/>
+<text x="578.0" y="436" font-size="9.5" fill="#6B6B67" text-anchor="middle" font-weight="700" font-family="'JetBrains Mono', Menlo, monospace">DEMO</text>
+<rect x="740" y="410" width="460" height="122" rx="12" fill="#FFFFFF" stroke="#D8D8D0" stroke-width="1.2"/>
+<rect x="740" y="410" width="460" height="5" rx="2.5" fill="#4F8582" opacity="0.9"/>
+<text x="970.0" y="444" font-size="14.5" fill="#111111" text-anchor="middle" font-weight="600" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">LiveCacLedger (VITE_CAC_LIVE=true)</text>
+<text x="970.0" y="466" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">midnight-js providers stack (same as scripts/)</text>
+<text x="970.0" y="483" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">wallet · proof · indexer · private state</text>
+<text x="970.0" y="500" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">single wiring point — no UI rewrite</text>
+<rect x="1128" y="422" width="60" height="20" rx="10" fill="#4F8582" opacity="0.12"/>
+<text x="1158.0" y="436" font-size="9.5" fill="#4F8582" text-anchor="middle" font-weight="700" font-family="'JetBrains Mono', Menlo, monospace">LIVE</text>
+<line x1="970" y1="532" x2="970" y2="584" stroke="#6B6B67" stroke-width="1.6" marker-end="url(#arw)"/>
+<rect x="700" y="588" width="540" height="140" rx="12" fill="#FFFFFF" stroke="#D8D8D0" stroke-width="1.2"/>
+<rect x="700" y="588" width="540" height="5" rx="2.5" fill="#173B57" opacity="0.9"/>
+<text x="970.0" y="622" font-size="14.5" fill="#111111" text-anchor="middle" font-weight="600" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">Midnight SDK services</text>
+<text x="970.0" y="644" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">proof server · docker midnightntwrk/proof-server:8.1.0 (:6300)</text>
+<text x="970.0" y="661" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">indexer v4 HTTP+WS · RPC (polkadot-js extrinsics)</text>
+<text x="970.0" y="678" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">wallet-sdk (shielded · unshielded · dust)</text>
+<rect x="1158" y="600" width="70" height="20" rx="10" fill="#173B57" opacity="0.12"/>
+<text x="1193.0" y="614" font-size="9.5" fill="#173B57" text-anchor="middle" font-weight="700" font-family="'JetBrains Mono', Menlo, monospace">INFRA</text>
+<line x1="970" y1="728" x2="970" y2="776" stroke="#6B6B67" stroke-width="1.6" marker-end="url(#arw)"/>
+<rect x="700" y="780" width="540" height="110" rx="12" fill="#FFFFFF" stroke="#D8D8D0" stroke-width="1.2"/>
+<rect x="700" y="780" width="540" height="5" rx="2.5" fill="#2F6B8A" opacity="0.9"/>
+<text x="970.0" y="814" font-size="14.5" fill="#111111" text-anchor="middle" font-weight="600" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">Compact CAC Contract → Midnight Preview</text>
+<text x="970.0" y="836" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">zkir + prover/verifier keys · compiler 0.31.1 · lang 0.23.0</text>
+<text x="970.0" y="853" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">deployed via scripts/deploy-preview.ts (tsx)</text>
+<rect x="1188" y="792" width="40" height="20" rx="10" fill="#2F6B8A" opacity="0.12"/>
+<text x="1208.0" y="806" font-size="9.5" fill="#2F6B8A" text-anchor="middle" font-weight="700" font-family="'JetBrains Mono', Menlo, monospace">L1</text>
+<rect x="160" y="588" width="460" height="190" rx="12" fill="#FFFFFF" stroke="#D8D8D0" stroke-width="1.2"/>
+<rect x="160" y="588" width="460" height="5" rx="2.5" fill="#A8792C" opacity="0.9"/>
+<text x="390.0" y="622" font-size="14.5" fill="#111111" text-anchor="middle" font-weight="600" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">Repository tooling</text>
+<text x="390.0" y="644" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">contract/ — cac.compact + managed artifacts + vitest</text>
+<text x="390.0" y="661" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">api/ — providers &amp; typed API (BBoard · cac-types)</text>
+<text x="390.0" y="678" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">vericred-cli/ — wallet facade · dust utilities</text>
+<text x="390.0" y="695" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">scripts/ — deploy-preview.ts · deploy-preprod.ts</text>
+<text x="390.0" y="712" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">docs/ — deployment-preview.json (real values)</text>
+<rect x="518" y="600" width="90" height="20" rx="10" fill="#A8792C" opacity="0.12"/>
+<text x="563.0" y="614" font-size="9.5" fill="#A8792C" text-anchor="middle" font-weight="700" font-family="'JetBrains Mono', Menlo, monospace">TOOLING</text>
+<line x1="390" y1="588" x2="560" y2="470" stroke="#6B6B67" stroke-width="1.6" stroke-dasharray="5 5" marker-end="url(#arw)"/>
+<text x="420" y="540" font-size="10.5" fill="#6B6B67" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">deploys</text>
+</svg>

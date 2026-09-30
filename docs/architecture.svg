@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 1290" width="2360" height="2580" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">
+<rect width="1180" height="1290" fill="#FAFAF8"/>
+<defs>
+<marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6B6B67"/></marker>
+<marker id="arwT" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#4F8582"/></marker>
+<marker id="arwA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2F6B8A"/></marker>
+</defs>
+<text x="590.0" y="46" font-size="21" fill="#111111" text-anchor="middle" font-weight="600" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">VeriCred — Privacy Architecture (dual-state)</text>
+<text x="60" y="92" font-size="10.5" fill="#98978F" text-anchor="start" font-weight="700" font-family="'JetBrains Mono', Menlo, monospace" letter-spacing="0.14em">ISSUER</text>
+<rect x="390" y="110" width="400" height="96" rx="12" fill="#FFFFFF" stroke="#D8D8D0" stroke-width="1.2"/>
+<rect x="390" y="110" width="400" height="5" rx="2.5" fill="#173B57" opacity="0.9"/>
+<text x="590.0" y="144" font-size="14.5" fill="#111111" text-anchor="middle" font-weight="600" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">University · Issuer</text>
+<text x="590.0" y="166" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">registrar session · institution owner key (Bytes&lt;32&gt;)</text>
+<rect x="638" y="122" width="140" height="20" rx="10" fill="#173B57" opacity="0.12"/>
+<text x="708.0" y="136" font-size="9.5" fill="#173B57" text-anchor="middle" font-weight="700" font-family="'JetBrains Mono', Menlo, monospace">ON-CHAIN KEY</text>
+<line x1="590" y1="206" x2="590" y2="258" stroke="#6B6B67" stroke-width="1.6" marker-end="url(#arw)"/>
+<text x="600.0" y="232.0" font-size="10.5" fill="#6B6B67" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">issue / revoke / suspend</text>
+<text x="60" y="250" font-size="10.5" fill="#98978F" text-anchor="start" font-weight="700" font-family="'JetBrains Mono', Menlo, monospace" letter-spacing="0.14em">APPLICATION</text>
+<rect x="340" y="262" width="500" height="96" rx="12" fill="#FFFFFF" stroke="#D8D8D0" stroke-width="1.2"/>
+<rect x="340" y="262" width="500" height="5" rx="2.5" fill="#2F6B8A" opacity="0.9"/>
+<text x="590.0" y="296" font-size="14.5" fill="#111111" text-anchor="middle" font-weight="600" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">VeriCred Application</text>
+<text x="590.0" y="318" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">vericred-ui · Vite + React 19 SPA · services/cac-service.ts</text>
+<rect x="748" y="274" width="80" height="20" rx="10" fill="#2F6B8A" opacity="0.12"/>
+<text x="788.0" y="288" font-size="9.5" fill="#2F6B8A" text-anchor="middle" font-weight="700" font-family="'JetBrains Mono', Menlo, monospace">CLIENT</text>
+<path d="M 470 358 L 300 420 L 300 452" fill="none" stroke="#6B6B67" stroke-width="1.6" marker-end="url(#arw)"/>
+<path d="M 710 358 L 880 420 L 880 452" fill="none" stroke="#6B6B67" stroke-width="1.6" marker-end="url(#arw)"/>
+<text x="120" y="444" font-size="10.5" fill="#98978F" text-anchor="start" font-weight="700" font-family="'JetBrains Mono', Menlo, monospace" letter-spacing="0.14em">PUBLIC STATE</text>
+<rect x="120" y="456" width="380" height="128" rx="12" fill="#FFFFFF" stroke="#D8D8D0" stroke-width="1.2"/>
+<rect x="120" y="456" width="380" height="5" rx="2.5" fill="#2F6B8A" opacity="0.9"/>
+<text x="310.0" y="490" font-size="14.5" fill="#111111" text-anchor="middle" font-weight="600" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">Public Ledger State</text>
+<text x="310.0" y="512" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">credentialStatus: Map&lt;Bytes&lt;32&gt;, Status&gt;</text>
+<text x="310.0" y="529" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">institutionOwner · totalCredentialsIssued</text>
+<text x="310.0" y="546" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">no names · no grades · no transcripts</text>
+<rect x="388" y="468" width="100" height="20" rx="10" fill="#2F6B8A" opacity="0.12"/>
+<text x="438.0" y="482" font-size="9.5" fill="#2F6B8A" text-anchor="middle" font-weight="700" font-family="'JetBrains Mono', Menlo, monospace">ON-CHAIN</text>
+<text x="690" y="444" font-size="10.5" fill="#98978F" text-anchor="start" font-weight="700" font-family="'JetBrains Mono', Menlo, monospace" letter-spacing="0.14em">PRIVATE STATE</text>
+<rect x="690" y="456" width="380" height="128" rx="12" fill="#FFFFFF" stroke="#D8D8D0" stroke-width="1.2" stroke-dasharray="6 5"/>
+<rect x="690" y="456" width="380" height="5" rx="2.5" fill="#4F8582" opacity="0.9"/>
+<text x="880.0" y="490" font-size="14.5" fill="#111111" text-anchor="middle" font-weight="600" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">Private Witness Data</text>
+<text x="880.0" y="512" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">studentGpaScaled (Uint&lt;16&gt;) · degreeIdHash</text>
+<text x="880.0" y="529" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">localSecretKey · transcript · identity</text>
+<text x="880.0" y="546" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">encrypted · holder device only</text>
+<rect x="948" y="468" width="110" height="20" rx="10" fill="#4F8582" opacity="0.12"/>
+<text x="1003.0" y="482" font-size="9.5" fill="#4F8582" text-anchor="middle" font-weight="700" font-family="'JetBrains Mono', Menlo, monospace">OFF-CHAIN</text>
+<path d="M 300 584 L 300 640 L 470 668" fill="none" stroke="#6B6B67" stroke-width="1.6" marker-end="url(#arw)"/>
+<path d="M 880 584 L 880 640 L 710 668" fill="none" stroke="#6B6B67" stroke-width="1.6" marker-end="url(#arw)"/>
+<rect x="340" y="672" width="500" height="118" rx="12" fill="#FFFFFF" stroke="#D8D8D0" stroke-width="1.2"/>
+<rect x="340" y="672" width="500" height="5" rx="2.5" fill="#173B57" opacity="0.9"/>
+<text x="590.0" y="706" font-size="14.5" fill="#111111" text-anchor="middle" font-weight="600" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">Compact ZK Circuits</text>
+<text x="590.0" y="728" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">issueCredential · verifyCredential</text>
+<text x="590.0" y="745" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">proveGpaThreshold · proveDegreeMatch</text>
+<text x="590.0" y="762" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">suspend / reinstate / revoke · batchIssue</text>
+<rect x="788" y="684" width="40" height="20" rx="10" fill="#173B57" opacity="0.12"/>
+<text x="808.0" y="698" font-size="9.5" fill="#173B57" text-anchor="middle" font-weight="700" font-family="'JetBrains Mono', Menlo, monospace">ZK</text>
+<line x1="590" y1="790" x2="590" y2="842" stroke="#6B6B67" stroke-width="1.6" marker-end="url(#arw)"/>
+<text x="600.0" y="816.0" font-size="10.5" fill="#6B6B67" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">proofs + commitments</text>
+<rect x="340" y="846" width="500" height="96" rx="12" fill="#FFFFFF" stroke="#D8D8D0" stroke-width="1.2"/>
+<rect x="340" y="846" width="500" height="5" rx="2.5" fill="#2F6B8A" opacity="0.9"/>
+<text x="590.0" y="880" font-size="14.5" fill="#111111" text-anchor="middle" font-weight="600" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">Midnight Preview Network</text>
+<text x="590.0" y="902" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">rpc.preview.midnight.network · indexer v4 (HTTP+WS)</text>
+<text x="590.0" y="919" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">proof server (docker :6300)</text>
+<rect x="788" y="858" width="40" height="20" rx="10" fill="#2F6B8A" opacity="0.12"/>
+<text x="808.0" y="872" font-size="9.5" fill="#2F6B8A" text-anchor="middle" font-weight="700" font-family="'JetBrains Mono', Menlo, monospace">L1</text>
+<line x1="590" y1="942" x2="590" y2="994" stroke="#6B6B67" stroke-width="1.6" marker-end="url(#arw)"/>
+<text x="600.0" y="968.0" font-size="10.5" fill="#6B6B67" text-anchor="start" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">ZK proof artifact (verificationId · QR · link)</text>
+<rect x="390" y="998" width="400" height="84" rx="12" fill="#FFFFFF" stroke="#D8D8D0" stroke-width="1.2"/>
+<rect x="390" y="998" width="400" height="5" rx="2.5" fill="#3E7C5B" opacity="0.9"/>
+<text x="590.0" y="1032" font-size="14.5" fill="#111111" text-anchor="middle" font-weight="600" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">ZK Verification</text>
+<text x="590.0" y="1054" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">boolean claim check vs public parameters</text>
+<rect x="698" y="1010" width="80" height="20" rx="10" fill="#3E7C5B" opacity="0.12"/>
+<text x="738.0" y="1024" font-size="9.5" fill="#3E7C5B" text-anchor="middle" font-weight="700" font-family="'JetBrains Mono', Menlo, monospace">VERIFY</text>
+<path d="M 470 1082 L 330 1130 L 330 1160" fill="none" stroke="#6B6B67" stroke-width="1.6" marker-end="url(#arw)"/>
+<path d="M 710 1082 L 850 1130 L 850 1160" fill="none" stroke="#6B6B67" stroke-width="1.6" marker-end="url(#arw)"/>
+<rect x="170" y="1164" width="320" height="88" rx="12" fill="#FFFFFF" stroke="#D8D8D0" stroke-width="1.2"/>
+<rect x="170" y="1164" width="320" height="5" rx="2.5" fill="#A8C1B5" opacity="0.9"/>
+<text x="330.0" y="1198" font-size="14.5" fill="#111111" text-anchor="middle" font-weight="600" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">Student · Holder</text>
+<text x="330.0" y="1220" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">wallet · proofs · selective disclosure</text>
+<rect x="690" y="1164" width="320" height="88" rx="12" fill="#FFFFFF" stroke="#D8D8D0" stroke-width="1.2"/>
+<rect x="690" y="1164" width="320" height="5" rx="2.5" fill="#C9B99A" opacity="0.9"/>
+<text x="850.0" y="1198" font-size="14.5" fill="#111111" text-anchor="middle" font-weight="600" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">Verifier · Relying Party</text>
+<text x="850.0" y="1220" font-size="11" fill="#6B6B67" text-anchor="middle" font-weight="400" font-family="'JetBrains Mono', Menlo, monospace">employer · admissions · boards</text>
+</svg>
