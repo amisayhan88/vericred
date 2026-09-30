@@ -34,6 +34,13 @@ const config = tseslint.config(
       },
     },
   },
+  {
+    // React Three Fiber uses custom intrinsic elements (mesh, args, position, …)
+    files: ['src/components/three/**'],
+    rules: {
+      'react/no-unknown-property': 'off',
+    },
+  },
 );
 
 export default config;
