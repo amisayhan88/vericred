@@ -25,7 +25,9 @@ export class VeriCredContractClient {
     return this.proofServerUrl;
   }
 
-  public async issueCredentialCircuit(credentialHash: string): Promise<{ txHash: string; status: 'SUCCESS' | 'FAILED' }> {
+  public async issueCredentialCircuit(
+    credentialHash: string,
+  ): Promise<{ txHash: string; status: 'SUCCESS' | 'FAILED' }> {
     console.log(`[ContractClient] Invoking issueCredential circuit for hash: ${credentialHash}`);
     await new Promise((res) => setTimeout(res, 600));
     return {
@@ -36,7 +38,7 @@ export class VeriCredContractClient {
 
   public async proveGpaThresholdCircuit(
     credentialHash: string,
-    minGpaScaled: number
+    minGpaScaled: number,
   ): Promise<{ zkProofHex: string; isSatisfied: boolean }> {
     console.log(`[ContractClient] Generating ZK proof for GPA threshold >= ${minGpaScaled / 100}`);
     await new Promise((res) => setTimeout(res, 800));
@@ -48,7 +50,7 @@ export class VeriCredContractClient {
 
   public async proveDegreeMatchCircuit(
     credentialHash: string,
-    expectedDegreeHash: string
+    expectedDegreeHash: string,
   ): Promise<{ zkProofHex: string; isSatisfied: boolean }> {
     console.log(`[ContractClient] Generating ZK degree match proof for degree hash: ${expectedDegreeHash}`);
     await new Promise((res) => setTimeout(res, 800));
@@ -64,6 +66,15 @@ export class VeriCredContractClient {
     return {
       txHash: `0x${Math.random().toString(16).substring(2, 34)}`,
       status: 'SUCCESS',
+    };
+  }
+
+  public async verifyCredentialCircuit(credentialHash: string): Promise<{ txHash: string; onLedger: boolean }> {
+    console.log(`[ContractClient] Checking credential status on ledger for hash: ${credentialHash}`);
+    await new Promise((res) => setTimeout(res, 350));
+    return {
+      txHash: `0x${Math.random().toString(16).substring(2, 34)}`,
+      onLedger: true,
     };
   }
 
@@ -91,7 +102,7 @@ export class VeriCredContractClient {
   public async batchIssueCredentialsCircuit(
     hash1: string,
     hash2: string,
-    hash3: string
+    hash3: string,
   ): Promise<{ txHash: string; status: 'SUCCESS' }> {
     console.log(`[ContractClient] Batch issuing 3 credentials`);
     await new Promise((res) => setTimeout(res, 900));
