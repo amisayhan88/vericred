@@ -1,38 +1,530 @@
 import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
+import { credentialDisplayId, proofVerificationId, randomHashHex } from '../lib/ids';
+
+/* -------------------------------------------------------------------------- */
+/* TYPES                                                                      */
+/* -------------------------------------------------------------------------- */
+
+export type CredentialStatus = 'ACTIVE' | 'PENDING' | 'EXPIRED' | 'SUSPENDED' | 'REVOKED';
+
+export type CredentialType =
+  'DEGREE' | 'TRANSCRIPT' | 'GPA' | 'GRADUATION' | 'COURSE_COMPLETION' | 'INSTITUTION_VERIFICATION';
+
+export type ClaimType =
+  'DEGREE_VALIDITY' | 'GPA_THRESHOLD' | 'GRADUATION_STATUS' | 'COURSE_COMPLETION' | 'ENROLLMENT_STATUS' | 'CUSTOM';
+
+export type TimelineKind = 'CREATED' | 'ISSUED' | 'RECEIVED' | 'PROOF' | 'VERIFIED' | 'STATUS' | 'REVOKED' | 'EXPIRED';
+
+export interface CredentialEvent {
+  kind: TimelineKind;
+  label: string;
+  detail?: string;
+  at: string; // ISO timestamp
+}
+
+export interface Credential {
+  id: string;
+  displayId: string;
+  owner: boolean; // held in the demo student's wallet
+  studentName: string;
+  studentDid: string;
+  institution: string;
+  type: CredentialType;
+  title: string; // e.g. "B.Tech Computer Science"
+  program: string; // e.g. "Computer Science & Engineering"
+  gpa: number; // PRIVATE witness value — never render in UI text
+  graduationYear: number;
+  credentialHash: string; // public ledger commitment
+  status: CredentialStatus;
+  issuedAt: string; // ISO
+  expiresAt?: string;
+  revokedAt?: string;
+  revocationReason?: string;
+  institutionVerified: boolean;
+  proofsGenerated: number;
+  verifications: number;
+  timeline: CredentialEvent[];
+}
+
+export type ProofStatus = 'GENERATED' | 'VERIFIED' | 'EXPIRED';
+
+export interface ProofRecord {
+  id: string;
+  verificationId: string; // shareable public handle: VP-XXXX-XXXX
+  credentialId: string;
+  credentialDisplayId: string;
+  claimType: ClaimType;
+  claimLabel: string; // human readable disclosed claim, e.g. "GPA ≥ 3.50"
+  threshold?: number;
+  customClaim?: string;
+  circuit: string; // compact circuit exercised by the proof
+  proofHash: string;
+  createdAt: string;
+  expiresAt: string;
+  disclosedFields: string[];
+  concealedFields: string[];
+  status: ProofStatus;
+  lastVerifiedAt?: string;
+  lastVerifier?: string;
+}
+
+export interface VerificationLog {
+  id: string;
+  at: string;
+  verifier: string;
+  verifierType: 'EMPLOYER' | 'INSTITUTION' | 'SCHOLARSHIP_BOARD' | 'ADMISSIONS_OFFICE' | 'CERTIFICATION_BOARD';
+  target: string; // credential display id or proof verification id
+  claim: string;
+  outcome: 'PASSED' | 'FAILED';
+}
 
 export interface Transaction {
   id: string;
-  type: 'ISSUE_CREDENTIAL' | 'VERIFY_PROOF' | 'REVOKE_CREDENTIAL' | 'SUSPEND_CREDENTIAL' | 'REINSTATE_CREDENTIAL' | 'BATCH_ISSUE';
+  type:
+    | 'ISSUE_CREDENTIAL'
+    | 'VERIFY_PROOF'
+    | 'PROOF_GENERATED'
+    | 'REVOKE_CREDENTIAL'
+    | 'SUSPEND_CREDENTIAL'
+    | 'REINSTATE_CREDENTIAL'
+    | 'BATCH_ISSUE'
+    | 'EXPIRE_CREDENTIAL';
   status: 'PENDING' | 'PROCESSING' | 'CONFIRMED' | 'FAILED';
   hash: string;
   timestamp: string;
   details: string;
 }
 
-export interface Credential {
-  id: string;
-  studentName: string;
-  studentDid: string;
-  institution: string;
-  degree: string;
-  major: string;
-  gpa: number;
-  graduationYear: number;
-  credentialHash: string;
-  status: 'VALID' | 'SUSPENDED' | 'REVOKED';
-  issueDate: string;
+export const CURRENT_STUDENT = 'Ananya Sharma';
+
+/* -------------------------------------------------------------------------- */
+/* SEED DATA (clearly isolated demo state — swap for live contract reads)      */
+/* -------------------------------------------------------------------------- */
+
+const now = () => new Date().toISOString();
+
+const daysAgo = (d: number) => new Date(Date.now() - d * 86_400_000).toISOString();
+const daysAhead = (d: number) => new Date(Date.now() + d * 86_400_000).toISOString();
+
+function seedCredential(
+  partial: Omit<Credential, 'id' | 'displayId' | 'timeline'> & { timeline?: CredentialEvent[] },
+): Credential {
+  const id = `cred-${partial.credentialHash.slice(2, 10)}-${partial.title.replace(/[^a-zA-Z]/g, '').slice(0, 3)}`;
+  return {
+    ...partial,
+    id,
+    displayId: credentialDisplayId(partial.credentialHash + partial.title),
+    timeline: partial.timeline ?? defaultTimeline(partial),
+  };
 }
 
-export interface ProofRecord {
-  id: string;
-  credentialId: string;
-  proofType: 'GPA_THRESHOLD' | 'DEGREE_VERIFICATION';
-  verifiedClaim: string;
-  timestamp: string;
-  status: 'VERIFIED' | 'REJECTED';
+function defaultTimeline(c: Omit<Credential, 'id' | 'displayId' | 'timeline'>): CredentialEvent[] {
+  const events: CredentialEvent[] = [
+    { kind: 'CREATED', label: 'Credential created', detail: c.institution, at: daysAgo(210) },
+    { kind: 'ISSUED', label: 'Issued by university', detail: c.institution, at: c.issuedAt },
+    { kind: 'RECEIVED', label: 'Received by student', detail: c.studentName, at: daysAgo(Math.max(1, 200)) },
+  ];
+  if (c.proofsGenerated > 0) {
+    events.push({
+      kind: 'PROOF',
+      label: 'ZK proof generated',
+      detail: `${c.proofsGenerated} selective-disclosure proof${c.proofsGenerated > 1 ? 's' : ''}`,
+      at: daysAgo(60),
+    });
+  }
+  if (c.verifications > 0) {
+    events.push({ kind: 'VERIFIED', label: 'Verified by employer', at: daysAgo(45) });
+  }
+  if (c.status === 'REVOKED') {
+    events.push({
+      kind: 'REVOKED',
+      label: 'Credential revoked',
+      detail: c.revocationReason,
+      at: c.revokedAt ?? daysAgo(20),
+    });
+  } else if (c.status === 'SUSPENDED') {
+    events.push({ kind: 'STATUS', label: 'Credential suspended', detail: 'Institution review', at: daysAgo(18) });
+  } else if (c.status === 'EXPIRED') {
+    events.push({ kind: 'EXPIRED', label: 'Credential expired', at: c.expiresAt ?? daysAgo(10) });
+  }
+  events.push({
+    kind: 'STATUS',
+    label: `Current status: ${c.status.charAt(0)}${c.status.slice(1).toLowerCase()}`,
+    at: daysAgo(1),
+  });
+  return events.sort((a, b) => a.at.localeCompare(b.at));
 }
 
-interface WalletState {
+const did = 'did:midnight:vc:ananya-7f3e91c4';
+
+const seedCredentials: Credential[] = [
+  seedCredential({
+    owner: true,
+    studentName: CURRENT_STUDENT,
+    studentDid: did,
+    institution: 'Future Institute of Engineering',
+    type: 'DEGREE',
+    title: 'B.Tech Computer Science',
+    program: 'Computer Science & Engineering',
+    gpa: 3.71,
+    graduationYear: 2026,
+    credentialHash: `0x${randomHashHex(64)}`,
+    status: 'ACTIVE',
+    issuedAt: daysAgo(18),
+    expiresAt: daysAhead(365 * 30),
+    institutionVerified: true,
+    proofsGenerated: 4,
+    verifications: 9,
+  }),
+  seedCredential({
+    owner: true,
+    studentName: CURRENT_STUDENT,
+    studentDid: did,
+    institution: 'Future Institute of Engineering',
+    type: 'TRANSCRIPT',
+    title: 'Academic Transcript',
+    program: 'Computer Science & Engineering',
+    gpa: 3.71,
+    graduationYear: 2026,
+    credentialHash: `0x${randomHashHex(64)}`,
+    status: 'ACTIVE',
+    issuedAt: daysAgo(18),
+    institutionVerified: true,
+    proofsGenerated: 2,
+    verifications: 3,
+  }),
+  seedCredential({
+    owner: true,
+    studentName: CURRENT_STUDENT,
+    studentDid: did,
+    institution: 'Future Institute of Engineering',
+    type: 'GPA',
+    title: 'GPA Credential',
+    program: 'Cumulative academic standing',
+    gpa: 3.71,
+    graduationYear: 2026,
+    credentialHash: `0x${randomHashHex(64)}`,
+    status: 'ACTIVE',
+    issuedAt: daysAgo(18),
+    institutionVerified: true,
+    proofsGenerated: 6,
+    verifications: 12,
+  }),
+  seedCredential({
+    owner: true,
+    studentName: CURRENT_STUDENT,
+    studentDid: did,
+    institution: 'Future Institute of Engineering',
+    type: 'GRADUATION',
+    title: 'Graduation Credential',
+    program: 'Class of 2026',
+    gpa: 3.71,
+    graduationYear: 2026,
+    credentialHash: `0x${randomHashHex(64)}`,
+    status: 'ACTIVE',
+    issuedAt: daysAgo(16),
+    institutionVerified: true,
+    proofsGenerated: 1,
+    verifications: 2,
+  }),
+  seedCredential({
+    owner: true,
+    studentName: CURRENT_STUDENT,
+    studentDid: did,
+    institution: 'Future Institute of Engineering',
+    type: 'COURSE_COMPLETION',
+    title: 'Course Completion — Advanced Cryptography',
+    program: 'Elective course record',
+    gpa: 3.71,
+    graduationYear: 2026,
+    credentialHash: `0x${randomHashHex(64)}`,
+    status: 'ACTIVE',
+    issuedAt: daysAgo(90),
+    institutionVerified: true,
+    proofsGenerated: 1,
+    verifications: 0,
+  }),
+  seedCredential({
+    owner: true,
+    studentName: CURRENT_STUDENT,
+    studentDid: did,
+    institution: 'Board of Technical Accreditation',
+    type: 'INSTITUTION_VERIFICATION',
+    title: 'Institution Verification',
+    program: 'Future Institute of Engineering — accredited',
+    gpa: 0,
+    graduationYear: 2026,
+    credentialHash: `0x${randomHashHex(64)}`,
+    status: 'ACTIVE',
+    issuedAt: daysAgo(120),
+    institutionVerified: true,
+    proofsGenerated: 0,
+    verifications: 1,
+  }),
+  seedCredential({
+    owner: true,
+    studentName: CURRENT_STUDENT,
+    studentDid: did,
+    institution: 'Future Institute of Engineering',
+    type: 'COURSE_COMPLETION',
+    title: 'Course Completion — Distributed Systems Lab',
+    program: 'Elective course record',
+    gpa: 3.71,
+    graduationYear: 2026,
+    credentialHash: `0x${randomHashHex(64)}`,
+    status: 'PENDING',
+    issuedAt: daysAgo(2),
+    institutionVerified: false,
+    proofsGenerated: 0,
+    verifications: 0,
+    timeline: [
+      { kind: 'CREATED', label: 'Issuance requested by student', at: daysAgo(2) },
+      { kind: 'STATUS', label: 'Current status: Pending', detail: 'Awaiting registrar sign-off', at: daysAgo(1) },
+    ],
+  }),
+  seedCredential({
+    owner: true,
+    studentName: CURRENT_STUDENT,
+    studentDid: did,
+    institution: 'Northgate Technical University',
+    type: 'DEGREE',
+    title: 'Diploma in Embedded Systems',
+    program: 'Embedded Systems',
+    gpa: 3.4,
+    graduationYear: 2022,
+    credentialHash: `0x${randomHashHex(64)}`,
+    status: 'EXPIRED',
+    issuedAt: daysAgo(1400),
+    expiresAt: daysAgo(60),
+    institutionVerified: true,
+    proofsGenerated: 1,
+    verifications: 2,
+  }),
+  // ----- University-issued population (not in demo student's wallet) -----
+  seedCredential({
+    owner: false,
+    studentName: 'Rohan Kapoor',
+    studentDid: 'did:midnight:vc:rohan-2b7c',
+    institution: 'Future Institute of Engineering',
+    type: 'DEGREE',
+    title: 'MBA Finance',
+    program: 'Business Administration',
+    gpa: 3.55,
+    graduationYear: 2024,
+    credentialHash: `0x${randomHashHex(64)}`,
+    status: 'SUSPENDED',
+    issuedAt: daysAgo(700),
+    institutionVerified: true,
+    proofsGenerated: 5,
+    verifications: 8,
+  }),
+  seedCredential({
+    owner: false,
+    studentName: 'Linh Nguyen',
+    studentDid: 'did:midnight:vc:linh-9a14',
+    institution: 'Future Institute of Engineering',
+    type: 'DEGREE',
+    title: 'B.Tech Electronics',
+    program: 'Electronics & Communication',
+    gpa: 3.82,
+    graduationYear: 2025,
+    credentialHash: `0x${randomHashHex(64)}`,
+    status: 'ACTIVE',
+    issuedAt: daysAgo(300),
+    expiresAt: daysAhead(365 * 29),
+    institutionVerified: true,
+    proofsGenerated: 3,
+    verifications: 6,
+  }),
+  seedCredential({
+    owner: false,
+    studentName: 'Kwame Osei',
+    studentDid: 'did:midnight:vc:kwame-5d71',
+    institution: 'Future Institute of Engineering',
+    type: 'DEGREE',
+    title: 'B.Sc Physics',
+    program: 'Physics',
+    gpa: 3.2,
+    graduationYear: 2021,
+    credentialHash: `0x${randomHashHex(64)}`,
+    status: 'REVOKED',
+    issuedAt: daysAgo(1600),
+    revokedAt: daysAgo(40),
+    revocationReason: 'Academic misconduct finding upheld by the conduct board.',
+    institutionVerified: true,
+    proofsGenerated: 2,
+    verifications: 1,
+  }),
+  seedCredential({
+    owner: false,
+    studentName: 'Sara Iqbal',
+    studentDid: 'did:midnight:vc:sara-8e2f',
+    institution: 'Future Institute of Engineering',
+    type: 'DEGREE',
+    title: 'M.Sc Data Science',
+    program: 'Data Science & AI',
+    gpa: 3.9,
+    graduationYear: 2026,
+    credentialHash: `0x${randomHashHex(64)}`,
+    status: 'ACTIVE',
+    issuedAt: daysAgo(12),
+    expiresAt: daysAhead(365 * 30),
+    institutionVerified: true,
+    proofsGenerated: 2,
+    verifications: 4,
+  }),
+];
+
+const seedProofs: ProofRecord[] = [
+  {
+    id: 'proof-seed-1',
+    verificationId: 'VP-3K9F-7MQD',
+    credentialId: seedCredentials[0].id,
+    credentialDisplayId: seedCredentials[0].displayId,
+    claimType: 'GPA_THRESHOLD',
+    claimLabel: 'GPA ≥ 3.50',
+    threshold: 3.5,
+    circuit: 'proveGpaThreshold',
+    proofHash: `0x${randomHashHex(64)}`,
+    createdAt: daysAgo(6),
+    expiresAt: daysAhead(84),
+    disclosedFields: ['Institution name', 'Degree title', 'GPA threshold satisfied'],
+    concealedFields: ['Exact GPA', 'Full transcript', 'Student identity', 'Course grades'],
+    status: 'GENERATED',
+  },
+  {
+    id: 'proof-seed-2',
+    verificationId: 'VP-8T2P-C4WN',
+    credentialId: seedCredentials[2].id,
+    credentialDisplayId: seedCredentials[2].displayId,
+    claimType: 'DEGREE_VALIDITY',
+    claimLabel: 'Degree valid: B.Tech Computer Science',
+    circuit: 'proveDegreeMatch',
+    proofHash: `0x${randomHashHex(64)}`,
+    createdAt: daysAgo(30),
+    expiresAt: daysAhead(60),
+    disclosedFields: ['Degree validity', 'Issuing institution'],
+    concealedFields: ['Identity', 'Grades', 'Exact GPA'],
+    status: 'VERIFIED',
+    lastVerifiedAt: daysAgo(3),
+    lastVerifier: 'Meridian Analytics',
+  },
+  {
+    id: 'proof-seed-3',
+    verificationId: 'VP-1Q4X-B7ZR',
+    credentialId: seedCredentials[7].id,
+    credentialDisplayId: seedCredentials[7].displayId,
+    claimType: 'GRADUATION_STATUS',
+    claimLabel: 'Graduation status verified',
+    circuit: 'verifyCredential',
+    proofHash: `0x${randomHashHex(64)}`,
+    createdAt: daysAgo(120),
+    expiresAt: daysAgo(30),
+    disclosedFields: ['Graduation status'],
+    concealedFields: ['Identity', 'Transcript'],
+    status: 'EXPIRED',
+  },
+];
+
+const seedVerifications: VerificationLog[] = [
+  {
+    id: 'ver-1',
+    at: daysAgo(1),
+    verifier: 'Meridian Analytics',
+    verifierType: 'EMPLOYER',
+    target: 'VP-8T2P-C4WN',
+    claim: 'Degree valid: B.Tech Computer Science',
+    outcome: 'PASSED',
+  },
+  {
+    id: 'ver-2',
+    at: daysAgo(2),
+    verifier: 'Aurelia State College',
+    verifierType: 'ADMISSIONS_OFFICE',
+    target: 'VP-3K9F-7MQD',
+    claim: 'GPA ≥ 3.50',
+    outcome: 'PASSED',
+  },
+  {
+    id: 'ver-3',
+    at: daysAgo(4),
+    verifier: 'National Scholarship Board',
+    verifierType: 'SCHOLARSHIP_BOARD',
+    target: seedCredentials[2].displayId,
+    claim: 'GPA credential authenticity',
+    outcome: 'PASSED',
+  },
+  {
+    id: 'ver-4',
+    at: daysAgo(6),
+    verifier: 'Calderwood Polytechnic',
+    verifierType: 'INSTITUTION',
+    target: seedCredentials[10].displayId,
+    claim: 'B.Sc Physics credential check',
+    outcome: 'FAILED',
+  },
+  {
+    id: 'ver-5',
+    at: daysAgo(8),
+    verifier: 'Helix Robotics',
+    verifierType: 'EMPLOYER',
+    target: seedCredentials[0].displayId,
+    claim: 'Institution verified + degree validity',
+    outcome: 'PASSED',
+  },
+  {
+    id: 'ver-6',
+    at: daysAgo(11),
+    verifier: 'ISO Engineering Certification Board',
+    verifierType: 'CERTIFICATION_BOARD',
+    target: seedCredentials[4].displayId,
+    claim: 'Course completion: Advanced Cryptography',
+    outcome: 'PASSED',
+  },
+];
+
+const seedTransactions: Transaction[] = [
+  {
+    id: 'tx-seed-1',
+    type: 'PROOF_GENERATED',
+    status: 'CONFIRMED',
+    hash: '0xd9810ec9fdc01d208878f891…831a',
+    timestamp: daysAgo(1),
+    details: 'ZK proof generated: GPA ≥ 3.50 on B.Tech Computer Science',
+  },
+  {
+    id: 'tx-seed-2',
+    type: 'VERIFY_PROOF',
+    status: 'CONFIRMED',
+    hash: '0x1559a810fab498fabdcdaed3…3673',
+    timestamp: daysAgo(1),
+    details: 'Employer verification passed: VP-8T2P-C4WN',
+  },
+  {
+    id: 'tx-seed-3',
+    type: 'REVOKE_CREDENTIAL',
+    status: 'CONFIRMED',
+    hash: '0x338478bef129de451342ad82…5538',
+    timestamp: daysAgo(40),
+    details: 'Credential revoked by institution: B.Sc Physics (conduct board finding)',
+  },
+  {
+    id: 'tx-seed-4',
+    type: 'ISSUE_CREDENTIAL',
+    status: 'CONFIRMED',
+    hash: '0x18696fe7536281a0eba55566…cd8a',
+    timestamp: daysAgo(18),
+    details: 'Issued B.Tech Computer Science to Ananya Sharma (witness sealed locally)',
+  },
+];
+
+/* -------------------------------------------------------------------------- */
+/* STORE                                                                      */
+/* -------------------------------------------------------------------------- */
+
+export interface WalletState {
+  // wallet
   isConnected: boolean;
   isConnecting: boolean;
   walletAddress: string | null;
@@ -40,310 +532,383 @@ interface WalletState {
   balance: string;
   contractAddress: string;
   activeWalletType: '1am' | 'lace' | 'custom' | null;
+
+  // ledger-adjacent state
   credentials: Credential[];
-  transactions: Transaction[];
   proofs: ProofRecord[];
-  
-  // Actions
+  verifications: VerificationLog[];
+  transactions: Transaction[];
+
+  // actions
   connectWallet: (provider?: '1am' | 'lace' | 'custom' | 'auto', customAddress?: string) => Promise<void>;
   disconnectWallet: () => void;
   selectWalletProvider: (provider: '1am' | 'lace' | 'custom') => void;
-  addTransaction: (tx: Omit<Transaction, 'id' | 'timestamp'>) => void;
-  issueCredential: (cred: Omit<Credential, 'id' | 'credentialHash' | 'status' | 'issueDate'>) => Promise<void>;
-  generateZkProof: (credentialId: string, proofType: 'GPA_THRESHOLD' | 'DEGREE_VERIFICATION', threshold?: number) => Promise<ProofRecord>;
-  revokeCredential: (credentialId: string) => Promise<void>;
-  suspendCredential: (credentialId: string) => Promise<void>;
-  reinstateCredential: (credentialId: string) => Promise<void>;
+  addTransaction: (tx: Omit<Transaction, 'id' | 'timestamp'> & { timestamp?: string }) => void;
+
+  createCredential: (input: {
+    studentName: string;
+    studentDid: string;
+    institution: string;
+    type: CredentialType;
+    title: string;
+    program: string;
+    gpa: number;
+    graduationYear: number;
+    status?: 'ACTIVE' | 'PENDING';
+  }) => Credential;
+
+  revokeCredential: (credentialId: string, reason: string) => void;
+  suspendCredential: (credentialId: string, reason?: string) => void;
+  reinstateCredential: (credentialId: string) => void;
+  activatePendingCredential: (credentialId: string) => void;
+
+  recordProof: (input: Omit<ProofRecord, 'id' | 'status'>) => ProofRecord;
+  markProofVerified: (proofId: string, verifier: string) => void;
+  logVerification: (entry: Omit<VerificationLog, 'id' | 'at'>) => void;
 }
 
-export const useWalletStore = create<WalletState>((set, get) => ({
-  isConnected: false,
-  isConnecting: false,
-  walletAddress: null,
-  networkId: 'preprod',
-  balance: '0.00 NIGHT',
-  activeWalletType: null,
-  contractAddress: 'a746a03e40e6e4b36ec451548e355f2611657c2334e0e7594c3d14d4ef8da1de',
-  
-  credentials: [
-    {
-      id: 'cred-1',
-      studentName: 'Alex Rivera',
-      studentDid: 'did:midnight:0x89f2a71b...e391',
-      institution: 'Stanford University',
-      degree: 'Bachelor of Science',
-      major: 'Computer Science',
-      gpa: 3.92,
-      graduationYear: 2025,
-      credentialHash: '0x9a8f7c6b5e4d3c2b1a0987654321fedcba9876543210123456789abcdef01234',
-      status: 'VALID',
-      issueDate: '2025-06-15',
-    },
-    {
-      id: 'cred-2',
-      studentName: 'Alex Rivera',
-      studentDid: 'did:midnight:0x89f2a71b...e391',
-      institution: 'MIT Department of EECS',
-      degree: 'Master of Engineering',
-      major: 'Artificial Intelligence & Cryptography',
-      gpa: 3.88,
-      graduationYear: 2026,
-      credentialHash: '0x123456789abcdef0123456789abcdef09a8f7c6b5e4d3c2b1a0987654321fedc',
-      status: 'VALID',
-      issueDate: '2026-05-20',
-    },
-  ],
+const STORAGE_VERSION = 3;
 
-  transactions: [
-    {
-      id: 'tx-101',
-      type: 'ISSUE_CREDENTIAL',
-      status: 'CONFIRMED',
-      hash: '0x3a91f4b82c7e01d6...84a2',
-      timestamp: '2026-07-26 14:32',
-      details: 'Issued B.S. Computer Science to Alex Rivera',
-    },
-    {
-      id: 'tx-102',
-      type: 'VERIFY_PROOF',
-      status: 'CONFIRMED',
-      hash: '0x7b1c9e4a2d5f8103...91e5',
-      timestamp: '2026-07-26 18:05',
-      details: 'Zero-Knowledge Proof verified: GPA >= 3.50',
-    },
-  ],
+export const useWalletStore = create<WalletState>()(
+  persist(
+    (set, get) => ({
+      isConnected: false,
+      isConnecting: false,
+      walletAddress: null,
+      networkId: (import.meta.env.VITE_NETWORK_ID as string | undefined) || 'preprod',
+      balance: '0.00 NIGHT',
+      activeWalletType: null,
+      contractAddress:
+        (import.meta.env.VITE_CAC_CONTRACT_ADDRESS as string | undefined) ||
+        (import.meta.env.VITE_CONTRACT_ADDRESS as string | undefined) ||
+        'a746a03e40e6e4b36ec451548e355f2611657c2334e0e7594c3d14d4ef8da1de',
 
-  proofs: [
-    {
-      id: 'proof-1',
-      credentialId: 'cred-1',
-      proofType: 'GPA_THRESHOLD',
-      verifiedClaim: 'GPA >= 3.50 (Actual identity and exact GPA concealed)',
-      timestamp: '2026-07-26 18:05',
-      status: 'VERIFIED',
-    },
-  ],
+      credentials: seedCredentials,
+      proofs: seedProofs,
+      verifications: seedVerifications,
+      transactions: seedTransactions,
 
-  selectWalletProvider: (provider) => {
-    set({ activeWalletType: provider });
-  },
+      selectWalletProvider: (provider) => {
+        set({ activeWalletType: provider });
+      },
 
-  connectWallet: async (provider = 'auto', customAddress?: string) => {
-    set({ isConnecting: true });
-
-    if (provider === 'custom' && customAddress) {
-      set({
-        isConnected: true,
-        isConnecting: false,
-        walletAddress: customAddress,
-        balance: '2,450.00 tNIGHT',
-        activeWalletType: 'custom',
-      });
-      return;
-    }
-
-    try {
-      const win = typeof window !== 'undefined' ? (window as any) : {};
-      
-      // Look specifically for 1am Wallet or Midnight Lace or general DApp Connector
-      let walletObject = null;
-
-      if (provider === '1am') {
-        walletObject = win.midnight?.['1am'] || win.midnight?.oneam || win.oneam || win.cardano?.oneam || win.midnight;
-      } else if (provider === 'lace') {
-        walletObject = win.midnight?.mnLace || win.midnight?.lace || win.lace || win.cardano?.midnight;
-      } else {
-        walletObject =
-          win.midnight?.['1am'] ||
-          win.midnight?.oneam ||
-          win.oneam ||
-          win.midnight?.mnLace ||
-          win.midnight?.lace ||
-          win.lace ||
-          win.midnight ||
-          win.cardano?.midnight;
-      }
-
-      if (walletObject) {
-        if (typeof walletObject.enable === 'function') {
-          const api = await walletObject.enable();
-          const accounts = (await api.getAccounts?.()) || (await api.state?.()) || [];
-          const walletAddr =
-            typeof accounts[0] === 'string'
-              ? accounts[0]
-              : accounts.address ||
-                accounts[0]?.address ||
-                'mn_addr_preprod18hl0hkw2sjdwuwztatxzp2mhwpre2w4hc9tlyx0l457k8dxd0fsqrda6jm';
-
-          let formattedBalance = '2,450.00 tNIGHT';
-          if (typeof api.getBalance === 'function') {
-            const bal = await api.getBalance();
-            if (bal) formattedBalance = `${bal} tNIGHT`;
-          }
-
+      connectWallet: async (provider = 'auto', customAddress?: string) => {
+        set({ isConnecting: true });
+        if (provider === 'custom' && customAddress) {
           set({
             isConnected: true,
             isConnecting: false,
-            walletAddress: walletAddr,
-            balance: formattedBalance,
-            activeWalletType: provider === 'lace' ? 'lace' : '1am',
-          });
-          return;
-        } else if (typeof walletObject.connect === 'function') {
-          const connectedApi = await walletObject.connect('preprod');
-          const state = await connectedApi.state?.() || [];
-          const walletAddr = typeof state[0] === 'string' ? state[0] : 'mn_addr_preprod18hl0hkw2sjdwuwztatxzp2mhwpre2w4hc9tlyx0l457k8dxd0fsqrda6jm';
-          
-          set({
-            isConnected: true,
-            isConnecting: false,
-            walletAddress: walletAddr,
+            walletAddress: customAddress,
             balance: '2,450.00 tNIGHT',
-            activeWalletType: provider === 'lace' ? 'lace' : '1am',
+            activeWalletType: 'custom',
           });
           return;
         }
-      }
-    } catch (err) {
-      console.warn('Browser wallet detection attempt:', err);
-    }
+        try {
+          type DappConnector = {
+            connect?: (network: string) => Promise<{ state?: () => Promise<unknown[]> }>;
+          };
+          const midnight = (window as unknown as { midnight?: Record<string, DappConnector> }).midnight;
+          const connector: DappConnector | undefined = midnight ? Object.values(midnight)[0] : undefined;
+          if (connector?.connect) {
+            const api = await connector.connect(get().networkId);
+            const accounts = api.state ? await api.state() : [];
+            const address = accounts.find((x): x is string => typeof x === 'string');
+            set({
+              isConnected: true,
+              isConnecting: false,
+              walletAddress: address ?? customAddress ?? null,
+              balance: '2,450.00 tNIGHT',
+              activeWalletType: provider === 'lace' ? 'lace' : '1am',
+            });
+            return;
+          }
+        } catch (err) {
+          console.warn('[VeriCred] wallet connector unavailable, falling back to demo session:', err);
+        }
+        // Demo-mode fallback so the product can be evaluated without an extension installed.
+        await new Promise((res) => setTimeout(res, 450));
+        set({
+          isConnected: true,
+          isConnecting: false,
+          walletAddress: customAddress || 'mn_addr_preprod18hl0hkw2sjdwuwztatxzp2mhwpre2w4hc9tlyx0l457k8dxd0fsqrda6jm',
+          balance: '2,450.00 tNIGHT',
+          activeWalletType: provider === 'lace' ? 'lace' : '1am',
+        });
+      },
 
-    // Preprod Testnet connection fallback
-    await new Promise((res) => setTimeout(res, 500));
-    set({
-      isConnected: true,
-      isConnecting: false,
-      walletAddress: customAddress || 'mn_addr_preprod18hl0hkw2sjdwuwztatxzp2mhwpre2w4hc9tlyx0l457k8dxd0fsqrda6jm',
-      balance: '2,450.00 tNIGHT',
-      activeWalletType: provider === 'lace' ? 'lace' : '1am',
-    });
-  },
+      disconnectWallet: () => {
+        set({ isConnected: false, walletAddress: null, balance: '0.00 NIGHT', activeWalletType: null });
+      },
 
-  disconnectWallet: () => {
-    set({
-      isConnected: false,
-      walletAddress: null,
-      balance: '0.00 NIGHT',
-      activeWalletType: null,
-    });
-  },
-
-  addTransaction: (tx) => {
-    const newTx: Transaction = {
-      ...tx,
-      id: `tx-${Date.now()}`,
-      timestamp: new Date().toLocaleString(),
-    };
-    set((state) => ({ transactions: [newTx, ...state.transactions] }));
-  },
-
-  issueCredential: async (credData) => {
-    const newCred: Credential = {
-      ...credData,
-      id: `cred-${Date.now()}`,
-      credentialHash: `0x${Math.random().toString(16).substring(2)}${Math.random().toString(16).substring(2)}`,
-      status: 'VALID',
-      issueDate: new Date().toISOString().split('T')[0],
-    };
-
-    set((state) => ({
-      credentials: [newCred, ...state.credentials],
-      transactions: [
-        {
+      addTransaction: (tx) => {
+        const newTx: Transaction = {
+          ...tx,
           id: `tx-${Date.now()}`,
-          type: 'ISSUE_CREDENTIAL',
-          status: 'CONFIRMED',
-          hash: `0x${Math.random().toString(16).substring(2, 18)}...${Math.random().toString(16).substring(2, 6)}`,
-          timestamp: new Date().toLocaleString(),
-          details: `Issued ${credData.degree} in ${credData.major} to ${credData.studentName}`,
-        },
-        ...state.transactions,
-      ],
-    }));
-  },
+          timestamp: tx.timestamp ?? new Date().toISOString(),
+        };
+        set((state) => ({ transactions: [newTx, ...state.transactions] }));
+      },
 
-  generateZkProof: async (credentialId, proofType, threshold = 3.5) => {
-    const cred = get().credentials.find((c) => c.id === credentialId);
-    const proof: ProofRecord = {
-      id: `proof-${Date.now()}`,
-      credentialId,
-      proofType,
-      verifiedClaim:
-        proofType === 'GPA_THRESHOLD'
-          ? `GPA >= ${threshold.toFixed(2)} (Actual identity and exact GPA concealed)`
-          : `Degree Verified: ${cred?.degree || 'Academic Degree'}`,
-      timestamp: new Date().toLocaleString(),
-      status: 'VERIFIED',
-    };
+      createCredential: (input) => {
+        const issuedAt = now();
+        const credential: Credential = {
+          id: `cred-${Date.now()}`,
+          displayId: credentialDisplayId(`${Date.now()}-${input.title}`),
+          owner: input.studentName === CURRENT_STUDENT,
+          ...input,
+          graduationYear: input.graduationYear,
+          credentialHash: `0x${randomHashHex(64)}`,
+          status: input.status ?? 'ACTIVE',
+          issuedAt,
+          expiresAt: input.status === 'ACTIVE' ? daysAhead(365 * 30) : undefined,
+          institutionVerified: true,
+          proofsGenerated: 0,
+          verifications: 0,
+          timeline: [
+            { kind: 'CREATED', label: 'Credential created', detail: input.institution, at: issuedAt },
+            ...(input.status === 'PENDING'
+              ? [{ kind: 'STATUS' as TimelineKind, label: 'Pending registrar sign-off', at: issuedAt }]
+              : [
+                  {
+                    kind: 'ISSUED' as TimelineKind,
+                    label: 'Issued by university',
+                    detail: input.institution,
+                    at: issuedAt,
+                  },
+                ]),
+          ],
+        };
+        set((state) => ({
+          credentials: [credential, ...state.credentials],
+          transactions: [
+            {
+              id: `tx-${Date.now()}`,
+              type: input.status === 'PENDING' ? 'ISSUE_CREDENTIAL' : 'ISSUE_CREDENTIAL',
+              status: input.status === 'PENDING' ? 'PENDING' : 'CONFIRMED',
+              hash: `0x${randomHashHex(24)}…${randomHashHex(4)}`,
+              timestamp: issuedAt,
+              details:
+                input.status === 'PENDING'
+                  ? `Credential queued for issuance: ${input.title} → ${input.studentName}`
+                  : `Issued ${input.title} to ${input.studentName} (witness sealed locally)`,
+            },
+            ...state.transactions,
+          ],
+        }));
+        return credential;
+      },
 
-    set((state) => ({
-      proofs: [proof, ...state.proofs],
-      transactions: [
-        {
-          id: `tx-${Date.now()}`,
-          type: 'VERIFY_PROOF',
-          status: 'CONFIRMED',
-          hash: `0x${Math.random().toString(16).substring(2, 18)}...${Math.random().toString(16).substring(2, 6)}`,
-          timestamp: new Date().toLocaleString(),
-          details: `Zero-Knowledge Proof verified: ${proof.verifiedClaim}`,
-        },
-        ...state.transactions,
-      ],
-    }));
+      revokeCredential: (credentialId, reason) => {
+        const at = now();
+        set((state) => ({
+          credentials: state.credentials.map((c) =>
+            c.id === credentialId
+              ? {
+                  ...c,
+                  status: 'REVOKED',
+                  revokedAt: at,
+                  revocationReason: reason,
+                  timeline: [...c.timeline, { kind: 'REVOKED', label: 'Credential revoked', detail: reason, at }],
+                }
+              : c,
+          ),
+          transactions: [
+            {
+              id: `tx-${Date.now()}`,
+              type: 'REVOKE_CREDENTIAL',
+              status: 'CONFIRMED',
+              hash: `0x${randomHashHex(24)}…${randomHashHex(4)}`,
+              timestamp: at,
+              details: `Revoked credential ${state.credentials.find((c) => c.id === credentialId)?.displayId ?? credentialId}`,
+            },
+            ...state.transactions,
+          ],
+        }));
+      },
 
-    return proof;
-  },
+      suspendCredential: (credentialId, reason) => {
+        const at = now();
+        set((state) => ({
+          credentials: state.credentials.map((c) =>
+            c.id === credentialId
+              ? {
+                  ...c,
+                  status: 'SUSPENDED',
+                  revocationReason: reason ?? c.revocationReason,
+                  timeline: [...c.timeline, { kind: 'STATUS', label: 'Credential suspended', detail: reason, at }],
+                }
+              : c,
+          ),
+          transactions: [
+            {
+              id: `tx-${Date.now()}`,
+              type: 'SUSPEND_CREDENTIAL',
+              status: 'CONFIRMED',
+              hash: `0x${randomHashHex(24)}…${randomHashHex(4)}`,
+              timestamp: at,
+              details: `Suspended credential ${state.credentials.find((c) => c.id === credentialId)?.displayId ?? credentialId}`,
+            },
+            ...state.transactions,
+          ],
+        }));
+      },
 
-  revokeCredential: async (credentialId) => {
-    set((state) => ({
-      credentials: state.credentials.map((c) => (c.id === credentialId ? { ...c, status: 'REVOKED' as const } : c)),
-      transactions: [
-        {
-          id: `tx-${Date.now()}`,
-          type: 'REVOKE_CREDENTIAL',
-          status: 'CONFIRMED',
-          hash: `0x${Math.random().toString(16).substring(2, 18)}...${Math.random().toString(16).substring(2, 6)}`,
-          timestamp: new Date().toLocaleString(),
-          details: `Revoked credential token ${credentialId}`,
-        },
-        ...state.transactions,
-      ],
-    }));
-  },
+      reinstateCredential: (credentialId) => {
+        const at = now();
+        set((state) => ({
+          credentials: state.credentials.map((c) =>
+            c.id === credentialId
+              ? {
+                  ...c,
+                  status: 'ACTIVE',
+                  revokedAt: undefined,
+                  revocationReason: undefined,
+                  timeline: [...c.timeline, { kind: 'STATUS', label: 'Credential reinstated', at }],
+                }
+              : c,
+          ),
+          transactions: [
+            {
+              id: `tx-${Date.now()}`,
+              type: 'REINSTATE_CREDENTIAL',
+              status: 'CONFIRMED',
+              hash: `0x${randomHashHex(24)}…${randomHashHex(4)}`,
+              timestamp: at,
+              details: `Reinstated credential ${state.credentials.find((c) => c.id === credentialId)?.displayId ?? credentialId}`,
+            },
+            ...state.transactions,
+          ],
+        }));
+      },
 
-  // NEW: Suspend a credential temporarily
-  suspendCredential: async (credentialId) => {
-    set((state) => ({
-      credentials: state.credentials.map((c) => (c.id === credentialId ? { ...c, status: 'SUSPENDED' as const } : c)),
-      transactions: [
-        {
-          id: `tx-${Date.now()}`,
-          type: 'SUSPEND_CREDENTIAL',
-          status: 'CONFIRMED',
-          hash: `0x${Math.random().toString(16).substring(2, 18)}...${Math.random().toString(16).substring(2, 6)}`,
-          timestamp: new Date().toLocaleString(),
-          details: `Suspended credential token ${credentialId}`,
-        },
-        ...state.transactions,
-      ],
-    }));
-  },
+      activatePendingCredential: (credentialId) => {
+        const at = now();
+        set((state) => ({
+          credentials: state.credentials.map((c) =>
+            c.id === credentialId
+              ? {
+                  ...c,
+                  status: 'ACTIVE',
+                  issuedAt: at,
+                  expiresAt: daysAhead(365 * 30),
+                  institutionVerified: true,
+                  timeline: [
+                    ...c.timeline,
+                    { kind: 'ISSUED', label: 'Issued by university', detail: c.institution, at },
+                  ],
+                }
+              : c,
+          ),
+          transactions: [
+            {
+              id: `tx-${Date.now()}`,
+              type: 'ISSUE_CREDENTIAL',
+              status: 'CONFIRMED',
+              hash: `0x${randomHashHex(24)}…${randomHashHex(4)}`,
+              timestamp: at,
+              details: `Issued pending credential ${state.credentials.find((c) => c.id === credentialId)?.displayId ?? credentialId}`,
+            },
+            ...state.transactions,
+          ],
+        }));
+      },
 
-  // NEW: Reinstate a previously suspended credential
-  reinstateCredential: async (credentialId) => {
-    set((state) => ({
-      credentials: state.credentials.map((c) => (c.id === credentialId ? { ...c, status: 'VALID' as const } : c)),
-      transactions: [
-        {
-          id: `tx-${Date.now()}`,
-          type: 'REINSTATE_CREDENTIAL',
-          status: 'CONFIRMED',
-          hash: `0x${Math.random().toString(16).substring(2, 18)}...${Math.random().toString(16).substring(2, 6)}`,
-          timestamp: new Date().toLocaleString(),
-          details: `Reinstated credential token ${credentialId}`,
-        },
-        ...state.transactions,
-      ],
-    }));
-  },
-}));
+      recordProof: (input) => {
+        const proof: ProofRecord = { ...input, id: `proof-${Date.now()}`, status: 'GENERATED' };
+        set((state) => ({
+          proofs: [proof, ...state.proofs],
+          credentials: state.credentials.map((c) =>
+            c.id === input.credentialId
+              ? {
+                  ...c,
+                  proofsGenerated: c.proofsGenerated + 1,
+                  timeline: [
+                    ...c.timeline,
+                    { kind: 'PROOF', label: 'ZK proof generated', detail: input.claimLabel, at: input.createdAt },
+                  ],
+                }
+              : c,
+          ),
+          transactions: [
+            {
+              id: `tx-${Date.now()}`,
+              type: 'PROOF_GENERATED',
+              status: 'CONFIRMED',
+              hash: `0x${randomHashHex(24)}…${randomHashHex(4)}`,
+              timestamp: input.createdAt,
+              details: `ZK proof generated: ${input.claimLabel} via circuit ${input.circuit}`,
+            },
+            ...state.transactions,
+          ],
+        }));
+        return proof;
+      },
+
+      markProofVerified: (proofId, verifier) => {
+        const at = now();
+        set((state) => ({
+          proofs: state.proofs.map((p) =>
+            p.id === proofId
+              ? {
+                  ...p,
+                  status: p.status === 'EXPIRED' ? p.status : 'VERIFIED',
+                  lastVerifiedAt: at,
+                  lastVerifier: verifier,
+                }
+              : p,
+          ),
+        }));
+      },
+
+      logVerification: (entry) => {
+        const at = now();
+        const log: VerificationLog = { ...entry, id: `ver-${Date.now()}`, at };
+        set((state) => ({
+          verifications: [log, ...state.verifications],
+          transactions: [
+            {
+              id: `tx-${Date.now()}`,
+              type: 'VERIFY_PROOF',
+              status: entry.outcome === 'PASSED' ? 'CONFIRMED' : 'FAILED',
+              hash: `0x${randomHashHex(24)}…${randomHashHex(4)}`,
+              timestamp: at,
+              details: `Verification ${entry.outcome.toLowerCase()}: ${entry.claim} (${entry.verifier})`,
+            },
+            ...state.transactions,
+          ],
+        }));
+      },
+    }),
+    {
+      name: 'vericred-store',
+      version: STORAGE_VERSION,
+      storage: createJSONStorage(() => localStorage),
+      // Version mismatch without a migrate fn => persisted demo state is dropped automatically.
+      partialize: (state) => ({
+        credentials: state.credentials,
+        proofs: state.proofs,
+        verifications: state.verifications,
+        transactions: state.transactions,
+        isConnected: state.isConnected,
+        walletAddress: state.walletAddress,
+        balance: state.balance,
+        activeWalletType: state.activeWalletType,
+      }),
+    },
+  ),
+);
+
+/* -------------------------------------------------------------------------- */
+/* SELECTORS                                                                  */
+/* -------------------------------------------------------------------------- */
+
+export const selectWalletCredentials = (s: WalletState) => s.credentials.filter((c) => c.owner);
+
+export const findCredentialByDisplayId = (s: WalletState, displayId: string) =>
+  s.credentials.find((c) => c.displayId.toLowerCase() === displayId.toLowerCase());
+
+export const findProofByVerificationId = (s: WalletState, verificationId: string) =>
+  s.proofs.find((p) => p.verificationId.toLowerCase() === verificationId.toLowerCase());
+
+export { proofVerificationId };
