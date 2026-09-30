@@ -1,46 +1,71 @@
-name: VeriCred Midnight CI/CD Pipeline
+name: VeriCred CI
 
 on:
   push:
-    branches: [ main, master, develop ]
+    branches: [main, master, develop]
   pull_request:
-    branches: [ main, master ]
+    branches: [main, master]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '24'
 
 jobs:
-  build-and-test:
+  quality:
+    name: Typecheck · Lint · Unit tests
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout Codebase
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js Environment
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
 
-      - name: Install Root & Workspace Dependencies
-        run: |
-          npm install --no-audit
-          npm --prefix contract install --no-audit
-          npm --prefix api install --no-audit
-          npm --prefix vericred-cli install --no-audit
-          npm --prefix vericred-ui install --no-audit
+      - name: Install workspace dependencies
+        run: npm install --no-audit
 
-      - name: Compile Compact Contracts & Build Core Libraries
-        run: |
-          npm --prefix contract run compact || true
-          npm --prefix contract run build
-          npm --prefix api run build
+      - name: Typecheck (contract · api · cli · ui)
+        run: npm run typecheck
 
-      - name: Typecheck TypeScript Codebases
-        run: |
-          npm run typecheck
+      - name: Lint UI
+        run: npm --prefix vericred-ui run lint
 
-      - name: Execute Smart Contract Unit Tests
-        run: |
-          npm test
+      - name: Contract unit tests (vitest)
+        run: npm test
 
-      - name: Build Application Packages
-        run: |
-          npm run build
+  build:
+    name: Build (frontend bundle)
+    runs-on: ubuntu-latest
+    needs: quality
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Install workspace dependencies
+        run: npm install --no-audit
+
+      - name: Build workspaces (contract → api → cli → ui)
+        run: npm run build
+
+      - name: Build Preview-mode bundle (Vercel artifact)
+        run: npm run build:vercel
+
+      - name: Upload dist artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: vericred-dist
+          path: dist/
+          retention-days: 7
+          if-no-files-found: error
