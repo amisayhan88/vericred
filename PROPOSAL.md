@@ -1,93 +1,120 @@
-# Project Proposal: VeriCred – Confidential Academic Credentials on Midnight Network
+# VeriCred — Project Proposal
 
-## 📋 Executive Summary
+### Confidential Academic Credentials on the Midnight Network
 
-**VeriCred** is a privacy-first, zero-knowledge **Confidential Academic Credentials Platform** built on the **Midnight Network**. It enables accredited educational institutions (universities, colleges, and certification bodies) to securely issue cryptographically verifiable academic credentials on-chain while empowering students to selectively prove their qualifications—such as achieving a *"GPA ≥ 3.50"* or holding a *"Degree in Computer Science"*—to employers and verifiers **without revealing their raw transcripts, exact grades, or sensitive personally identifiable information (PII)**.
-
-🎥 **1-Minute DApp Demo Video**: [https://youtu.be/AO1LrfsJX2c?si=hAST_DOITezVdSZ2](https://youtu.be/AO1LrfsJX2c?si=hAST_DOITezVdSZ2)
-
----
-
-## 💥 Problem Statement
-
-Current academic credential verification systems are broken, slow, and privacy-invasive:
-
-1. **Over-Sharing of Private Data**: Verifying a degree currently requires sending a full transcript or diploma scan. This exposes confidential information like birth dates, social security numbers, semester-by-semester grades, and failed course retakes to potential employers.
-2. **Fraud & Counterfeiting**: Diploma mills and forged PDF certificates cost organizations billions annually, while traditional verification checks take days or weeks through manual registrar calls.
-3. **Lack of Student Data Sovereignty**: Students do not own or control their academic credentials; they rely on third-party verification agencies or institutional databases that charge fees per verification check.
+| | |
+|---|---|
+| **Product** | Privacy-preserving academic credential issuance & verification platform |
+| **Network** | Midnight **Preview** (contract deployed & E2E-verified — see [README](README.md#-live-deployment)) |
+| **Contract** | `e71bf7d73babb895c4524deebcec7fd2ef2a9590854770732492598c91e99df1` |
+| **Stack** | Compact 0.23 (compiler 0.31.1) · midnight-js 4.1.1 · Vite + React 19 · TypeScript · Tailwind · Framer Motion · React Three Fiber |
+| **Status** | Deployed, on-chain E2E 7/7, unit tests 14/14, CI/CD + Vercel pipeline wired |
 
 ---
 
-## 🛡️ The VeriCred Solution
+## 1. Executive Summary
 
-VeriCred leverages Midnight Network’s **Compact Smart Contracts** and zero-knowledge (ZK-SNARK) circuits to solve these issues:
+**VeriCred** lets accredited institutions issue cryptographically verifiable academic credentials,
+and lets students prove exactly what a verifier asks — *"GPA ≥ 3.50"*, *"degree valid"*, *"graduated
+2026"* — using zero-knowledge proofs on Midnight, **without revealing transcripts, identities, or any
+adjacent personal data**.
 
-- 🔒 **Zero-Knowledge Selective Disclosure**: Students generate zk-SNARK proofs locally on their device to prove criteria (e.g., GPA threshold, degree match) without revealing the underlying data.
-- 📜 **On-Chain Credential Attestation**: Universities sign credential hashes onto Midnight’s public ledger for instant, global verification.
-- 🛡️ **Private Witness State Storage**: Student identity keys, exact GPAs, and course details are stored exclusively in local private state (`cacPrivateState`).
-- ⚡ **Tamper-Proof & Instant**: On-chain verification takes seconds with zero reliance on centralized third parties.
+The platform is built on Midnight's dual-state model: a compact public commitment and status live on
+the ledger; the sensitive witness (GPA, degree hash, keys) stays encrypted on the holder's device and
+is consumed only inside small formal ZK circuits.
 
----
+## 2. Problem
 
-## 🏗️ Technical Architecture & Smart Contract Design
+1. **Over-disclosure.** Verifying one fact (a GPA floor) currently requires handing over an entire
+   transcript — grades, retakes, identity fields, address, date of birth.
+2. **Fraud & slow checks.** Forged PDFs and diploma mills persist because verification is manual,
+   bilateral, and days-slow (registrar calls, email chains, paid agencies).
+3. **No holder sovereignty.** Students don't own their records; institutions and agencies mediate
+   every check and charge for it.
+4. **Naive blockchain fixes leak more.** Putting grades on-chain trades one problem for a worse one.
+   VeriCred puts *commitments and booleans* on-chain — never the data.
 
-### Smart Contract (`cac.compact`)
-The contract is written in Compact, separating ledger state into public data and local witness state:
+## 3. Solution
 
-```compact
-pragma language_version 0.23;
-
-export enum CredentialStatus {
-  UNISSUED,
-  VALID,
-  REVOKED
-}
-
-export ledger totalCredentialsIssued: Counter;
-export ledger institutionOwner: Bytes<32>;
-export ledger credentialStatus: Map<Bytes<32>, CredentialStatus>;
-
-witness localSecretKey(): Bytes<32>;
-witness studentGpaScaled(): Uint<32>;
-witness degreeIdHash(): Bytes<32>;
+```text
+University ──issueCredential──▶ Public ledger: { credentialHash → VALID }
+     │                          (no PII, ever)
+     └──sealed witness──▶ Student device (encrypted private state)
+                                   │
+                     student picks a claim (e.g. GPA ≥ 3.50)
+                                   │
+                    Compact circuit proveGpaThreshold(hash, 350)
+                                   │
+                        succinct ZK proof (VP-XXXX-XXXX)
+                                   │
+                 Verifier checks in ms → "true" + public labels only
 ```
 
-### Zero-Knowledge Circuits
-1. `issueCredential(credentialHash)`: Institution authority issues credential hash to public ledger.
-2. `verifyCredential(credentialHash)`: Checks credential status on-chain.
-3. `proveGpaThreshold(credentialHash, minGpaScaled)`: ZK circuit proving student's GPA meets or exceeds threshold without revealing exact GPA.
-4. `proveDegreeMatch(credentialHash, expectedDegreeHash)`: ZK circuit proving degree match without disclosing student identity.
-5. `revokeCredential(credentialHash)`: Revokes issued credential by institution authority.
+**Circuits (compiled, deployed):** `issueCredential`, `verifyCredential`, `proveGpaThreshold`,
+`proveDegreeMatch`, `suspendCredential`, `reinstateCredential`, `revokeCredential`,
+`batchIssueCredentials` — all issuer-mutating circuits assert the institution-owner key.
 
----
+**Product surfaces (all implemented):**
 
-## 🌐 Level 1 Preprod Deployment & Environment
+| Route | Surface |
+| ----- | ------- |
+| `/` | Marketing landing — 3D proof-network hero, “proof without disclosure” interactive, use cases |
+| `/how-it-works` | Cinematic six-station scroll walkthrough of the real circuit flow |
+| `/architecture` | Interactive dual-state topology (hoverable 3D) + circuit reference |
+| `/wallet` | Student credential wallet — six credential types, live statuses, proof availability |
+| `/proof` | 5-step proof generator — claim picker, staged ZK animation, disclosure review, QR share |
+| `/verify`, `/verify/:vid` | Verifier portal (ID / QR / upload / wallet) + minimal public verification page |
+| `/credential/:id` | Credential sheet — certificate layout, lifecycle timeline, QR, redacted privacy panel |
+| `/universities` | Institution console — issuance, student table, revocation center, verification activity |
+| `/transactions`, `/settings`, `/legal` | Ledger activity, network configuration, policy |
 
-| Parameter | Value |
-| --- | --- |
-| **Network** | Midnight Preprod Testnet |
-| **Preprod Contract Address** | `a746a03e40e6e4b36ec451548e355f2611657c2334e0e7594c3d14d4ef8da1de` |
-| **Undeployed Contract Address** | `3523aa3006329b8e763ba2cc655fb9a0e25833d2f11072c1d50146a830074d0b` |
-| **Preprod Deployer Wallet** | `mn_addr_preprod18hl0hkw2sjdwuwztatxzp2mhwpre2w4hc9tlyx0l457k8dxd0fsqrda6jm` |
-| **Proof Server Container** | `midnightntwrk/proof-server:8.1.0` |
+## 4. Privacy Model
 
-### On-Chain Explorer Verification
-- 🌐 [preprod.midnightexplorer.com](https://preprod.midnightexplorer.com)
-- 🌐 [midnight-preprod.subscan.io](https://midnight-preprod.subscan.io)
-- 🌐 [explorer.1am.xyz (preprod)](https://explorer.1am.xyz)
+| Data | Location | Visible to |
+| ---- | -------- | ---------- |
+| Credential commitment (32B hash) | On-chain | Everyone |
+| Status (VALID/SUSPENDED/REVOKED) | On-chain | Everyone |
+| Institution owner public key, issue counter | On-chain | Everyone |
+| Exact GPA, degree hash, secret key | Encrypted witness, holder device | Nobody — circuits emit booleans only |
+| Name, transcript, DOB, address | Never submitted anywhere | Nobody |
 
----
+A failed proof (e.g. threshold above the real GPA) is rejected **locally** — no transaction, no
+disclosure. Verified on-chain in the E2E run (step 4 of `docs/e2e-preview.json`).
 
-## 🔒 Privacy Model & Guarantees
+## 5. Current State — Verified, Not Promised
 
-- **PUBLIC Data**: Total credentials counter, institution public key, credential status mapping (`VALID`, `REVOKED`), and disclosed transition outputs.
-- **PRIVATE Data**: Raw GPA values, student secret keys, degree hashes, and identity documents.
-- **ZK PROOF Claim**: The verifier receives mathematical proof that the student meets the credential criteria without gaining access to raw private inputs.
+- **Deployed on Midnight Preview**: block #1083540, status `SucceedEntirely`
+  (full record: [`docs/deployment-preview.json`](docs/deployment-preview.json))
+- **On-chain E2E 7/7**: issue → verify → ZK GPA proof (pass **and** honest-fail) → revoke →
+  post-revoke rejection → unauthorized-issuer rejection ([`docs/e2e-preview.json`](docs/e2e-preview.json))
+- **Unit tests 14/14** (vitest, contract simulator)
+- **CI/CD**: GitHub Actions (typecheck · lint · tests · builds) + secrets-gated Vercel deploy
+- **Docs**: architecture, deployment, ZK proofs, user flows, security (incl. known limitations),
+  troubleshooting — with generated diagrams (`docs/*.png`)
 
----
+## 6. Roadmap
 
-## 🗓️ Project Roadmap
+1. **LiveCacLedger in the browser** — flip `VITE_CAC_LIVE` and complete the marked integration point
+   in `vericred-ui/src/services/cac-service.ts` so wallets drive the deployed Preview contract
+   directly (provider stack already proven by the deploy scripts).
+2. **Multi-institution governance** — per-institution owner keys / allowlist instead of a single
+   `institutionOwner` constant.
+3. **W3C VC interop** — export proofs as Verifiable Credentials for non-Midnight verifiers.
+4. **Credential expiry on-chain** — encode validity windows in ledger state (currently UI-side).
+5. **Mainnet** — redeploy the identical artifact set against Midnight mainnet once available to the
+   project, with a rotated deployer key and audited circuits.
 
-- **Level 1 (Completed)**: Compact contract development, unit testing (Vitest), local Docker proof server integration, and Preprod testnet deployment.
-- **Level 2 (In Progress)**: Multi-institution issuer registry, browser wallet connector integration (Lace / Midnight Wallet), and dynamic ZK proof generation UI.
-- **Level 3 (Future)**: Enterprise SIS/LMS API plugins (Canvas, Blackboard, Banner), automated revocation indexers, and third-party security audit.
+## 7. Why Midnight
+
+- **Dual-state by design** — private witnesses are a protocol primitive, not an app-side bolt-on.
+- **Compact** — small formal circuits with compiled prover/verifier keys; cheap to audit.
+- **Data-privacy L1 posture** — “prove, don't disclose” matches the regulatory reality of academic
+  records (FERPA/GDPR-adjacent minimization) better than any transparent ledger.
+
+## 8. References
+
+- [README](README.md) — live deployment table, features, testing evidence
+- [docs/architecture.md](docs/architecture.md) · [docs/zk-proofs.md](docs/zk-proofs.md) ·
+  [docs/security.md](docs/security.md) · [docs/deployment.md](docs/deployment.md) ·
+  [docs/user-flows.md](docs/user-flows.md) · [docs/troubleshooting.md](docs/troubleshooting.md)
+- Contract source: [`contract/src/cac.compact`](contract/src/cac.compact)
