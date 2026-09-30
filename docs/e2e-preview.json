@@ -1,0 +1,63 @@
+{
+  "runs": [
+    {
+      "at": "2026-09-29T23:06:48.423Z",
+      "contractAddress": "e71bf7d73babb895c4524deebcec7fd2ef2a9590854770732492598c91e99df1",
+      "credentialHash": "0x2ef63020e0dbec6e30bd0a847016cbdf63a78d62e2856c7d3073cb437a58c1c0",
+      "passed": 7,
+      "total": 7,
+      "results": [
+        {
+          "step": "issueCredential",
+          "expected": "counter +1, status VALID",
+          "actual": "counter 2, status VALID",
+          "passed": true,
+          "txHash": "689498dab7c8f9c159dfdbf865d86307c1735d662080ad9d867984fe1a30f7e4",
+          "block": 1084103
+        },
+        {
+          "step": "verifyCredential (active)",
+          "expected": "assertion passes → tx confirmed",
+          "actual": "confirmed in block #1084107",
+          "passed": true,
+          "txHash": "49f3a7ef6038b1b6b421b562e3efd0b7f5e018912c004a77c27aacd9b7cbb61c",
+          "block": 1084107
+        },
+        {
+          "step": "proveGpaThreshold ≥ 3.50 (witness 3.85)",
+          "expected": "proof generated → tx confirmed",
+          "actual": "confirmed in block #1084111",
+          "passed": true,
+          "txHash": "6e6520b7ff128cad30037f40220e6b5161441d40f77da4924afdd5d231257092",
+          "block": 1084111
+        },
+        {
+          "step": "proveGpaThreshold ≥ 3.95 (witness 3.85)",
+          "expected": "circuit assertion failure, no disclosure",
+          "actual": "rejected: Unexpected error executing scoped transaction '<unnamed>': Error: failed assert: GPA below",
+          "passed": true
+        },
+        {
+          "step": "revokeCredential",
+          "expected": "status REVOKED",
+          "actual": "status REVOKED",
+          "passed": true,
+          "txHash": "325347af64adf41abf33f735fce0e044f173a5a3ca3e5fb7b99c2a3775b6727e",
+          "block": 1084116
+        },
+        {
+          "step": "verifyCredential (revoked)",
+          "expected": "assertion failure",
+          "actual": "rejected",
+          "passed": true
+        },
+        {
+          "step": "issueCredential with foreign institution key",
+          "expected": "owner assertion failure",
+          "actual": "rejected: Unexpected error executing scoped transaction '<unnamed>': Error: failed assert: Only accr",
+          "passed": true
+        }
+      ]
+    }
+  ]
+}

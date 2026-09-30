@@ -1,0 +1,35 @@
+{
+  "network": "Midnight Preview",
+  "contractName": "VeriCred CAC (Confidential Academic Credentials)",
+  "contractAddress": "e71bf7d73babb895c4524deebcec7fd2ef2a9590854770732492598c91e99df1",
+  "deployerUnshieldedAddress": "mn_addr_preview1xzej9p78pa65rywz4085z9ee75wanmq7gq5k88alrm3j6q8p3wzsr4kmpg",
+  "deployment": {
+    "note": "Deployment transaction details recorded from the deploy-preview.ts run (scripts/deploy-preview.ts stage 6 log).",
+    "txId": "0031cfc89200173a266400184751bb6053873d225500c17e7d52e480d932cd0f46",
+    "txHash": "e67e425d27d858a6486e8fbf7108613ed03f508836848b9958fff223b7b07714",
+    "blockHeight": 1083540,
+    "status": "SucceedEntirely",
+    "deployedAt": "2026-09-30T03:39:05+05:30"
+  },
+  "smokeInteraction": {
+    "circuit": "issueCredential",
+    "credentialHash": "0xf89e7af884fb1abd7e129583cef0f484950b7f16db1987242413a0a4840fdc6a",
+    "txId": "009e276baf01018c9f4819d70e255cfbbff8e917adb5acb515000fac52c3284e31",
+    "txHash": "e5259e1d025527a5fd89b479362a3394f49958ea414984c891bc3898b6107470",
+    "blockHeight": 1083645,
+    "totalCredentialsIssuedBefore": "0",
+    "totalCredentialsIssuedAfter": "1"
+  },
+  "endpoints": {
+    "rpc": "https://rpc.preview.midnight.network",
+    "indexer": "https://indexer.preview.midnight.network/api/v4/graphql",
+    "faucet": "https://faucet.preview.midnight.network/api/drips",
+    "proofServer": "http://localhost:6300"
+  },
+  "compact": {
+    "compiler": "0.31.1",
+    "language": "0.23.0",
+    "runtime": "0.16.0"
+  },
+  "verifiedAt": "2026-09-29T22:19:33.155Z"
+}
