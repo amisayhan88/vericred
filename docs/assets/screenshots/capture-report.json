@@ -1,0 +1,122 @@
+[
+  {
+    "file": "desktop-home.png",
+    "bytes": 458279,
+    "sha256_8": "da104abb",
+    "attempt": 1
+  },
+  {
+    "file": "desktop-home-platform.png",
+    "bytes": 241229,
+    "sha256_8": "4a986334",
+    "attempt": 1
+  },
+  {
+    "file": "desktop-how-it-works.png",
+    "bytes": 158802,
+    "sha256_8": "d7b89ed5",
+    "attempt": 1
+  },
+  {
+    "file": "desktop-architecture.png",
+    "bytes": 294798,
+    "sha256_8": "09d79fa9",
+    "attempt": 1
+  },
+  {
+    "file": "desktop-wallet.png",
+    "bytes": 243484,
+    "sha256_8": "07e6974d",
+    "attempt": 1
+  },
+  {
+    "file": "desktop-proof.png",
+    "bytes": 278334,
+    "sha256_8": "20d957c0",
+    "attempt": 1
+  },
+  {
+    "file": "desktop-verify.png",
+    "bytes": 238394,
+    "sha256_8": "59334ba2",
+    "attempt": 1
+  },
+  {
+    "file": "desktop-verify-result.png",
+    "bytes": 215888,
+    "sha256_8": "2b4a8615",
+    "attempt": 1
+  },
+  {
+    "file": "desktop-universities.png",
+    "bytes": 627163,
+    "sha256_8": "b270962c",
+    "attempt": 1
+  },
+  {
+    "file": "desktop-universities-issue.png",
+    "bytes": 338470,
+    "sha256_8": "d72ea2f1",
+    "attempt": 1
+  },
+  {
+    "file": "desktop-transactions.png",
+    "bytes": 299054,
+    "sha256_8": "45a7f156",
+    "attempt": 1
+  },
+  {
+    "file": "desktop-settings.png",
+    "bytes": 280717,
+    "sha256_8": "dcf2add5",
+    "attempt": 1
+  },
+  {
+    "file": "desktop-credential.png",
+    "bytes": 262951,
+    "sha256_8": "378f9e7c",
+    "attempt": 1
+  },
+  {
+    "file": "mobile-home.png",
+    "bytes": 197019,
+    "sha256_8": "25e9391c",
+    "attempt": 1
+  },
+  {
+    "file": "mobile-wallet.png",
+    "bytes": 105397,
+    "sha256_8": "914ed215",
+    "attempt": 1
+  },
+  {
+    "file": "mobile-proof.png",
+    "bytes": 105746,
+    "sha256_8": "3c04157a",
+    "attempt": 1
+  },
+  {
+    "file": "mobile-verify.png",
+    "bytes": 123567,
+    "sha256_8": "bde4c210",
+    "attempt": 1
+  },
+  {
+    "file": "mobile-verify-result.png",
+    "bytes": 90597,
+    "sha256_8": "c1962b34",
+    "attempt": 1
+  },
+  {
+    "file": "mobile-universities.png",
+    "bytes": 86356,
+    "sha256_8": "6536cdd3",
+    "attempt": 1
+  },
+  {
+    "file": "mobile-credential.png",
+    "bytes": 89144,
+    "sha256_8": "804d9d27",
+    "attempt": 1
+  }
+]
