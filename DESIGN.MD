@@ -1,3 +1,36 @@
+# VeriCred — Design System (v2 · current implementation)
+
+> The sections below this header describe the original v1 analysis pass. v2 (implemented in `vericred-ui`) is the
+> authoritative system: **academic infrastructure × privacy technology × institutional trust**, light-mode first.
+
+## v2 tokens (Tailwind theme in `vericred-ui/tailwind.config.js`)
+
+- Canvas `#FAFAF8` · Paper `#FFFFFF` · Shell (soft surface) `#F3F2ED`
+- Ink `#111111` · Graphite `#3A3A37` · Mist (secondary) `#6B6B67` · Faint `#98978F`
+- Line `#E7E7E2` · Line-soft `#F0F0EA`
+- Accents (restrained): Deep `#173B57` (primary CTA / mastheads) · Academic `#2F6B8A` · Teal `#4F8582` (proofs/private)
+  · Sage `#A8C1B5` · Sand `#E8E0D1` / Sand-deep `#C9B99A`
+- Semantic: Success `#3E7C5B` · Warning `#A8792C` · Error `#A8452F`
+- Type: **Fraunces** display (500, fluid clamps) · **Inter** body · **JetBrains Mono** technical labels (overline / mono-label / chips)
+- Radii 8–20px, hairline borders, soft layered shadows; glass used only for header + modal scrim.
+
+## v2 principles
+
+1. Light institutional canvas; no gradients beyond two masthead bands; no neon, no purple.
+2. Three.js (R3F + drei) appears only as **proof-infrastructure geometry**: the Credential Proof Network (hero), the
+   six-station scroll scene (How It Works), and the interactive dual-state topology (Architecture). All lazy-loaded,
+   visibility-gated (IntersectionObserver → frameloop pause), DPR-capped, particle-reduced on compact viewports, and
+   motion-disabled under `prefers-reduced-motion`.
+3. Framer Motion for intentional reveal: staggered headline, scroll reveals, status crossfades, stepper/plate
+   transitions. Micro-3D for UI (tilt credential tiles, rotating SVG verification seal, QR scanning beam).
+4. Product surfaces (wallet, proof generator, verifier portal, university console) share the marketing shell — one
+   header, one footer, one token set — and render honest loading / success / failed / empty / pending states.
+5. Contract truthfulness: UIs talk to `services/cac-service.ts` (`CredentialLedger`). The demo ledger mirrors the
+   `cac.compact` circuit ABI one-to-one; `LiveCacLedger` + `VITE_CAC_LIVE` is the single wiring point to the deployed
+   Midnight contract via the existing provider stack.
+
+---
+
 ---
 version: alpha
 name: Cal.com-design-analysis
