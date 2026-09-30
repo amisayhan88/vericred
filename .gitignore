@@ -21,6 +21,12 @@ logs/
 .idea/
 .vscode/
 
+# Vercel
+.vercel
+
 # Local LevelDB state
 midnight-level-db/
 preprod-state-*/
+preview-state-*/
+.states/
+dust-checkpoint*.json
