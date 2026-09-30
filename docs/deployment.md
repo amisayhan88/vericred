@@ -7,6 +7,7 @@
 | Field | Value |
 | ----- | ----- |
 | Network | Midnight Preview |
+| Explorer | [contract](https://preview.midnightexplorer.com/contracts/0xe71bf7d73babb895c4524deebcec7fd2ef2a9590854770732492598c91e99df1) · [deploy tx](https://preview.midnightexplorer.com/transactions/0xe67e425d27d858a6486e8fbf7108613ed03f508836848b9958fff223b7b07714) · [block #1083540](https://preview.midnightexplorer.com/blocks/1083540) |
 | Contract | VeriCred CAC (`contract/src/cac.compact`) |
 | Contract address | `e71bf7d73babb895c4524deebcec7fd2ef2a9590854770732492598c91e99df1` |
 | Deployment txId | `0031cfc89200173a266400184751bb6053873d225500c17e7d52e480d932cd0f46` |
