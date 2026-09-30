@@ -364,7 +364,7 @@ What's true today: the project behind dv-portal.vercel.app builds a **Next.js** 
 
 ## Continuous Integration
 
-[`ci.yml`](.github/workflows/ci.yml) runs on every push/PR: **quality** (typecheck contract+api+cli+ui → UI lint → vitest, 14 tests) then **build** (full workspace build → Preview bundle → `dist/` artifact). Measured first run on `main` (run 36749327979): quality ✓ 1m03s, build ✓ 1m24s. The Vercel job exits *success* with a skip notice until the secrets exist — fork-safe by design.
+[`ci.yml`](.github/workflows/ci.yml) runs on every push/PR: **quality** (typecheck contract+api+cli+ui → UI lint → vitest, 14 tests) then **build** (full workspace build → Preview bundle → `dist/` artifact). Measured on the current head (run 36756239843, 53-commit rebuilt main): **quality ✓ 53 s, build ✓ 1 m 05 s**; earlier monolith runs measured 1 m 03 s / 1 m 24 s — same gates, same result. The Vercel job exits *success* with a skip notice until the secrets exist — fork-safe by design.
 
 The capture harness (a pipeline sibling) recently caught a real bug fail-closed: non-deterministic seed commitments broke every QR/deep link — fixed in [`b1e57ce`](https://github.com/amisayhan88/vericred/commit/b1e57ce).
 
